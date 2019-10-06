@@ -100,11 +100,11 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 	    newY = (newY + grid.getSizeY()) % grid.getSizeY();
 
 	    if(tryMove(newX, newY)){
-		grass += rgsSpace.takeGrassAt(x, y);
+		grass += rgsSpace.takeGrassAt(newX, newY);
 		energyLevel += grass;
 	    }
 	    else {
-	    	RabbitsGrassSimulationAgent cda = rgsSpace.getAgentAt(newX, newY);
+	    	//RabbitsGrassSimulationAgent cda = rgsSpace.getAgentAt(newX, newY);
 	    	setVxVy();
 	    }
 		energyLevel--;
@@ -112,6 +112,10 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 		
 	public void setEnergyLevel(int ne) {
 		energyLevel = ne;
+	}
+	
+	public void setGrass(int ne) {
+		grass = ne;
 	}
 	  
 	

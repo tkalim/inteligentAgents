@@ -128,17 +128,19 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			
 			class RabbitsGrassStep extends BasicAction {
 			      public void execute() {
-				    rgsSpace.spreadGrass(grassGrowthRate);
 			    	SimUtilities.shuffle(agentList);			        
 			        for(int i =0; i < agentList.size(); i++){
 			          RabbitsGrassSimulationAgent cda = (RabbitsGrassSimulationAgent)agentList.get(i);
 			          cda.step();
-			          if (cda.getEnergyLevel() >= birthThreshold) {
+			          cda.report();
+			          if (cda.getEnergyLevel() > birthThreshold) {
 			        	  addNewAgent();
 			        	  cda.setEnergyLevel(cda.getEnergyLevel() - birthThreshold);
+			        	  //cda.setGrass(cda.getEnergyLevel() - birthThreshold);
 			          }
 			        }
 			        
+			        rgsSpace.spreadGrass(grassGrowthRate);
 			        int deadRabbits = reapDeadRabbits();
 			        
 			        displaySurf.updateDisplay();
