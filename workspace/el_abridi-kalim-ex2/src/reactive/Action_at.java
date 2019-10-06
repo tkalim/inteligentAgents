@@ -15,6 +15,12 @@ public class Action_at {
 
 	}
 
+	public Action_at() {
+		this.accept_task = null;
+		this.next_city = null;
+		this.action_id = null;
+	}
+
 	public boolean isAccept_task() {
 		return accept_task;
 	}

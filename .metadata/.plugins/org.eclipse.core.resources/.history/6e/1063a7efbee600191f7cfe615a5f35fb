@@ -1,0 +1,18 @@
+package reactive;
+
+import logist.topology.Topology.City;
+import logist.task.Task;
+
+public class state {
+	
+	private City current_city;
+	private Task available_task;
+	private int state_id;
+	
+	public state(City current_city, Task available_task) {
+		this.current_city = current_city;
+		this.available_task = available_task;
+		this.state_id = //TODO;
+	}
+
+}

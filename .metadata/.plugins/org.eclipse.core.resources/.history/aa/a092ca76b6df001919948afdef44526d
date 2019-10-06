@@ -1,0 +1,10 @@
+/**
+ * Class that implements the simulation space of the rabbits grass simulation.
+ * @author 
+ */
+import uchicago.src.sim.space.Object2DGrid;
+
+
+public class RabbitsGrassSimulationSpace {
+
+}

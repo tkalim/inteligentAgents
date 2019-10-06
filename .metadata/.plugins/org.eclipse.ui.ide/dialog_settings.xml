@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+		<item value="/home/tariq/epfl/intelagents/rabbits/el_abridi-kalim-in"/>
+		<item value="/home/tariq/epfl/intelagents/rabbits"/>
+	</list>
+	<section name="NewWizardAction">
+	</section>
+</section>

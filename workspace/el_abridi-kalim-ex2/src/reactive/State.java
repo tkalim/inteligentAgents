@@ -15,7 +15,7 @@ public class State {
 		this.state_id = String.valueOf(current_city.id) + available_task.id;
 	}
 
-	public City getCurrent_city() {
+	public City getCurrentCity() {
 		return current_city;
 	}
 
