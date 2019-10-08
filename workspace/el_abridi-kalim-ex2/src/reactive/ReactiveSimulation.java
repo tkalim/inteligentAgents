@@ -3,6 +3,8 @@ package reactive;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -40,22 +42,24 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 		// list of tasks
 		tasks = new ArrayList<Topology.City>(topology.cities());
-		System.out.println("tasks = " + tasks);
-		System.out.println("here1");
+		//System.out.println("tasks = " + tasks);
+		//System.out.println("here1");
 
 		// The state of being in the same city (no task)
 		tasks.add(null);
-		Boolean convergence = true;
-		while(convergence == true){
-			System.out.println("here2");
+		Boolean convergence = false;
+		while(convergence == false){
 			// we assume it is converging unless we found better improvement
 			convergence = true;
 			for (City city : topology) {
 				for (City task : tasks) {
+					//System.out.println("City " + city + " task" + task);
 					// skip state with task of the same city
-					if(!city.equals(task)){
+					if (city.equals(task))
+						continue;
 						// initiliaze current state
 						State state = new State(city, task);
+						System.out.println("testing state " + state);
 
 						// initiliaze the current Q value to the minimum with
 						// current bestActionQvalue correspondigly
@@ -72,27 +76,39 @@ public class ReactiveSimulation implements ReactiveBehavior {
 						if(state.getTask() != null)
 							legalDestinationsOfState.add(state.getTask());
 
-						System.out.println("legalDestinationsOfState = " + legalDestinationsOfState);
+						//System.out.println("legalDestinationsOfState = " + legalDestinationsOfState);
 						// compute Qvalue of all potention actions from the current state
 						for(City action : legalDestinationsOfState){
+							if(task == null)
+								System.out.println("I AM HERE");
 							double QValue = reward(state, action, td, agent) +
 															discount * sigmaTransitionProb(state, action, td);
-							System.out.println("legalDestination = " + action + "QValue " + QValue);
+							//ystem.out.println("legalDestination = " + action + "QValue " + QValue);
 							if(bestQValue < QValue){
 								bestQValue = QValue;
 								bestActionQvalue = action;
 							}
 						}
 
-						if(bestStateActionQValue.getOrDefault(state, 0.0).equals(bestQValue)){
+						if(!bestStateActionQValue.getOrDefault(state, 0.0).equals(bestQValue)){
+							System.out.println("I AM HERE2" + bestQValue);
 							bestStateActionQValue.put(state, bestQValue);
 							bestStateAction.put(state, bestActionQvalue);
 							convergence = false;
 						}
-					}
+
 				}
 			}
 		}
+
+		// System.out.println("****************************");
+		// for (HashMap.Entry<State, City> entry : bestStateAction.entrySet()) {
+		// 	System.out.println(entry.getKey() + "=" + entry.getValue());
+		// }
+		// for (HashMap.Entry<State, Double> entry : bestStateActionQValue.entrySet()) {
+		// 	System.out.println(entry.getKey() + "=" + entry.getValue());
+		// }
+
 	}
 
 	private Double reward(State state, City action, TaskDistribution td, Agent agent){
@@ -122,6 +138,11 @@ public class ReactiveSimulation implements ReactiveBehavior {
 	@Override
 	public Action act(Vehicle vehicle, Task availableTask) {
 
+		System.out.println("****************************");
+		for (HashMap.Entry<State, City> entry : bestStateAction.entrySet()) {
+			System.out.println(entry.getKey() + "=" + entry.getValue() + " value = " + bestStateActionQValue.get(entry.getKey()));
+		}
+
 		Action action;
 
 		City city = vehicle.getCurrentCity();
@@ -129,12 +150,6 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		System.out.println("state: " + state);
 		City dest = bestStateAction.get(state);
 		System.out.println("destination city:" + dest);
-		for (HashMap.Entry<State, City> entry : bestStateAction.entrySet()) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
-		for (HashMap.Entry<State, Double> entry : bestStateActionQValue.entrySet()) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
 
 		if (dest.equals(state.getTask())) {
 			action = new Pickup(availableTask);
