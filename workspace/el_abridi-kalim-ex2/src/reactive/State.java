@@ -6,9 +6,9 @@ import logist.task.Task;
 public class State {
 
 	private City city;
-	private Task task;
+	private City task;
 
-	public State(City city, Task task) {
+	public State(City city, City task) {
 		this.city = city;
 		this.task = task;
 	}
@@ -17,7 +17,7 @@ public class State {
 		return city;
 	}
 
-	public Task getTask() {
+	public City getTask() {
 		return task;
 	}
 

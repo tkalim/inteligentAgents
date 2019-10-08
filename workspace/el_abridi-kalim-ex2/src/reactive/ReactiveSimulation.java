@@ -23,7 +23,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 	private Agent myAgent;
 
 	// TODO: comment these
-	private HashMap<State, Action> bestStateAction = new HashMap<State, Action>();
+	private HashMap<State, City> bestStateAction = new HashMap<State, City>();
 	private HashMap<State, Double> bestStateActionQValue = new HashMap<State, Double>();
 	private ArrayList<City> tasks;
 
@@ -39,7 +39,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		this.myAgent = agent;
 
 		// list of tasks
-		tasks = new ArrayList<City>(topology.cities());
+		tasks = new ArrayList<Topology.City>(topology.cities());
 
 		// The state of being in the same city (no task)
 		tasks.add(null);
@@ -90,25 +90,26 @@ public class ReactiveSimulation implements ReactiveBehavior {
 	}
 
 	private Double reward(State state, City action, TaskDistribution td, Agent agent){
-		Double reward = action.equals(state.getTask()) ? td.reward(state.getCity(), action) : 0;
-		Double cost = state.getCity().distanceTo(action) * agent.agent.vehicles().get(0).costPerKm();
+		Double reward = action.equals(state.getTask()) ? td.reward(state.getCity(), action) : 0.0;
+		Double cost = state.getCity().distanceTo(action) * agent.vehicles().get(0).costPerKm();
 		return reward - cost;
 	}
 
 	private Double sigmaTransitionProb(State state, City action, TaskDistribution td){
 		// For all possible next state' (prime)
-		Double q = 0;
+		Double q = 0.0;
 		for (City taskP : tasks) {
 			State stateP = new State(action, taskP);
 			q += transitionProbability(state, action, stateP, td) * bestStateActionQValue.getOrDefault(state, 0.0);
 		}
+		return q;
 
 	}
 
 	// probability to reach state stateP from State by taking action Action
 	private double transitionProbability(State state, City action, State stateP, TaskDistribution td) {
 		return state.getCity().equals(action) || state.getCity().equals(state.getTask()) || state.getCity().equals(stateP.getCity())
-				|| !stateP.getCity().equals(action) ? 0.0 : td.probability(stateP.city, stateP.task);
+				|| !stateP.getCity().equals(action) ? 0.0 : td.probability(stateP.getCity(), stateP.getTask());
 	}
 
 
@@ -119,9 +120,15 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 		City city = vehicle.getCurrentCity();
 		State state = new State(city, availableTask == null ? null : availableTask.deliveryCity);
-		City dest = bestStateActionQValue.get(state);
+		System.out.println("state: " + state);
+		City dest = bestStateAction.get(state);
+		System.out.println("destination city:" + dest);
+		for (HashMap.Entry<State, City> entry : bestStateAction.entrySet()) {
+			System.out.println(entry.getKey() + "=" + entry.getValue());
+		}
+		
 
-		if (state.task.equals(dest)) {
+		if (state.getTask().equals(dest)) {
 			action = new Pickup(availableTask);
 		}
 		else {
