@@ -34,5 +34,9 @@ public class State {
 		result = prime * result + ((available_task == null) ? 0 : available_task.id);
 		return result;
 	}
+	
+	public String toString() {
+		return "currentCity:" + getCurrentCity() + " available_task: " + available_task;
+	}
 
 }

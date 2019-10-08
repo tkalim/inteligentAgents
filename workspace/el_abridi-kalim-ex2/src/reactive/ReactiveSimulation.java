@@ -60,7 +60,11 @@ public class ReactiveSimulation implements ReactiveBehavior {
 				id++;
 			}
 		}
-
+		
+		for (State statex: states_map.values()) {
+			System.out.println(statex);
+		}
+		
 		// new statesMap
 		// Map<City, HashMap<Task, State>> statesMap = new HashMap<City, HashMap<Task, State>>();
 		// for (City from : topology) {
