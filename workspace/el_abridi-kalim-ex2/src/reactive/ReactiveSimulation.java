@@ -173,11 +173,13 @@ public class ReactiveSimulation implements ReactiveBehavior {
 			else {
 				action = new Move(bestAction.getNext_city());
 			}
-
-			if (numActions >= 1) {
-				System.out.println("The total profit after "+numActions+" actions is "+myAgent.getTotalProfit()+" (average profit: "+(myAgent.getTotalProfit() / (double)numActions)+")");
-			}
+			
 			numActions++;
+
+			if (numActions >= 1 && numActions % 100 == 0) {
+				System.out.println("The total profit after "+numActions+" actions is "+myAgent.getTotalProfit());
+				System.out.println("The average profit: "+(myAgent.getTotalProfit() / (double)numActions));
+			}
 
 			return action;
 		}
