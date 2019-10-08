@@ -118,13 +118,17 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		//Offline training algorithm
 		//init of value of S
 		for (State state : states_map.values()){
-			valueOfStateMap.put(state, 1.0);
+			valueOfStateMap.put(state, 0.0);
 		}
-		while (true) {
-			Boolean convergence = true;
+
+		//hello
+		Boolean convergence = false;
+		while (convergence == false) {
+			convergence = true;
 			for (State state : states_map.values()) {
 				HashMap<Action_at, Double> qMapAction = new HashMap<Action_at, Double>();
 				Double maximum_qValue = 0.0;
+				//Double maximum_qValue = valueOfStateMap.get(state);
 				Action_at maximum_qValue_action = new Action_at();
 				for (Action_at action : actionsMap.values()){
 					Double reward = rewardMap.get(state).get(action);
@@ -132,24 +136,34 @@ public class ReactiveSimulation implements ReactiveBehavior {
 					Double sigmaT = 0.0;
 
 					for (State statePrime : states_map.values()){
-						if(valueOfStateMap.containsKey(statePrime)){
-							sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap.get(statePrime);
-						}
+//						if(valueOfStateMap.containsKey(statePrime)){
+//							sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap.get(statePrime);
+//							//System.out.println("SigmaT " + transitionMap.get(statePrime).get(state).get(action));
+//						}
+						sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap.get(statePrime);
 					}
-					Double qValue = reward + discount*sigmaT;
+					Double qValue = reward + (discount * sigmaT);
+					System.out.println("qValue: " + qValue);
 					qMapAction.put(action, qValue);
 					if(qValue > maximum_qValue){
 						maximum_qValue = qValue;
 						maximum_qValue_action = action;
+						System.out.println("///////////////// maximum_qvalue is updated");
 					}
-					if(Math.abs(qValue - maximum_qValue) < 1e-1 * maximum_qValue){
-						convergence = false;
-					}
-					System.out.println("State hashcode " + state.hashCode() + " qvalue : " + Double.toString(qValue) + " maximum_qValue " + Double.toString(maximum_qValue));
+//					if(Math.abs(qValue - maximum_qValue) > 0.01 * maximum_qValue){
+//						convergence = false;
+//					}
+//					System.out.println("State hashcode " + state.hashCode() + " qvalue : " + Double.toString(qValue) + " maximum_qValue " + Double.toString(maximum_qValue));
 				}
-				qMap.put(state, qMapAction);
-				valueOfStateMap.put(state, maximum_qValue);
-				bestOfStateMap.put(state, maximum_qValue_action);
+				if(Math.abs(maximum_qValue - valueOfStateMap.get(state)) > 0.1 * valueOfStateMap.get(state)) {
+					qMap.put(state, qMapAction);
+					valueOfStateMap.put(state, maximum_qValue);
+					bestOfStateMap.put(state, maximum_qValue_action);
+					convergence = false;
+				}
+//				qMap.put(state, qMapAction);
+//				valueOfStateMap.put(state, maximum_qValue);
+//				bestOfStateMap.put(state, maximum_qValue_action);
 			}
 		}
 		}
@@ -166,6 +180,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 			State currentState = getCurrentState(vehicle, availableTask);
 			City currentCity = vehicle.getCurrentCity();
 			Action_at bestAction = bestOfStateMap.get(currentState);
+			System.out.println(bestAction);
 
 			if (bestAction.isAccept_task()) {
 				action = new Pickup(availableTask);
@@ -173,7 +188,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 			else {
 				action = new Move(bestAction.getNext_city());
 			}
-			
+
 			numActions++;
 
 			if (numActions >= 1 && numActions % 100 == 0) {
