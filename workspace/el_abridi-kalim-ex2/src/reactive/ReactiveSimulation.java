@@ -40,17 +40,20 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 		// list of tasks
 		tasks = new ArrayList<Topology.City>(topology.cities());
+		System.out.println("tasks = " + tasks);
+		System.out.println("here1");
 
 		// The state of being in the same city (no task)
 		tasks.add(null);
 		Boolean convergence = true;
 		while(convergence == true){
+			System.out.println("here2");
 			// we assume it is converging unless we found better improvement
 			convergence = true;
 			for (City city : topology) {
 				for (City task : tasks) {
 					// skip state with task of the same city
-					if(!city.equals(tasks)){
+					if(!city.equals(task)){
 						// initiliaze current state
 						State state = new State(city, task);
 
@@ -62,23 +65,26 @@ public class ReactiveSimulation implements ReactiveBehavior {
 						// legal destination from state =
 						// neighboring cities + city of task
 						HashSet<City> legalDestinationsOfState =
-													new HashSet(state.getCity().neighbors());
-
+													new HashSet();
+						//System.out.println("neighbord of = " state.getCity() + " : " + state.getCity().neighbors());
+						legalDestinationsOfState.addAll(state.getCity().neighbors());
 						//TODO: comment this one
 						if(state.getTask() != null)
 							legalDestinationsOfState.add(state.getTask());
 
+						System.out.println("legalDestinationsOfState = " + legalDestinationsOfState);
 						// compute Qvalue of all potention actions from the current state
 						for(City action : legalDestinationsOfState){
 							double QValue = reward(state, action, td, agent) +
 															discount * sigmaTransitionProb(state, action, td);
+							System.out.println("legalDestination = " + action + "QValue " + QValue);
 							if(bestQValue < QValue){
 								bestQValue = QValue;
 								bestActionQvalue = action;
 							}
 						}
 
-						if(Math.abs(bestStateActionQValue.getOrDefault(state, 0.0) - bestQValue) > 1e-3){
+						if(bestStateActionQValue.getOrDefault(state, 0.0).equals(bestQValue)){
 							bestStateActionQValue.put(state, bestQValue);
 							bestStateAction.put(state, bestActionQvalue);
 							convergence = false;
@@ -126,9 +132,11 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		for (HashMap.Entry<State, City> entry : bestStateAction.entrySet()) {
 			System.out.println(entry.getKey() + "=" + entry.getValue());
 		}
-		
+		for (HashMap.Entry<State, Double> entry : bestStateActionQValue.entrySet()) {
+			System.out.println(entry.getKey() + "=" + entry.getValue());
+		}
 
-		if (state.getTask().equals(dest)) {
+		if (dest.equals(state.getTask())) {
 			action = new Pickup(availableTask);
 		}
 		else {
