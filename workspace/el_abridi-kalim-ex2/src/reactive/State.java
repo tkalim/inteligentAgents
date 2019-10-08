@@ -5,8 +5,8 @@ import logist.task.Task;
 
 public class State {
 
-	private City city;
-	private City task;
+	public City city;
+	public City task;
 
 	public State(City city, City task) {
 		this.city = city;
@@ -26,7 +26,7 @@ public class State {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result + ((task == null) ? 0 : task.id);
+		result = prime * result + ((task == null) ? 0 : task.hashCode());
 		return result;
 	}
 
@@ -34,8 +34,7 @@ public class State {
 		return "hashCode: " + hashCode() + " currentCity:"
 					 + getCity() + " task: " + getTask();
 	}
-	
-	// Eclipse generate this; no human should read it!
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
