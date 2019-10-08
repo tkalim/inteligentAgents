@@ -100,7 +100,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		}
 
 		//filling Transition Probability table
-		HashMap<State, HashMap<State, HashMap<Action_at, Double>>> transitionMap = new HashMap<State, HashMap<State, HashMap< Action_at, Double>>>();
+		HashMap<State, HashMap<State, HashMap<Action_at, Double>>> transitionMap = new HashMap<State, HashMap<State, <HashMap< Action_at, Double>>>();
 		for (State statePrime : states_map.values()) {
 			HashMap<State, HashMap<Action_at, Double>> transitionStateMap = new HashMap<State, HashMap<Action_at, Double>>();
 			for (State state : states_map.values()) {
@@ -116,10 +116,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 
 		//Offline training algorithm
-		//init of value of S
-		for (State state : states_map.values()){
-			valueOfStateMap.put(state, 1.0);
-		}
+
 		while (true) {
 			Boolean convergence = true;
 			for (State state : states_map.values()) {
@@ -132,26 +129,20 @@ public class ReactiveSimulation implements ReactiveBehavior {
 					Double sigmaT = 0.0;
 
 					for (State statePrime : states_map.values()){
-						if(valueOfStateMap.containsKey(statePrime)){
-							sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap.get(statePrime);
-						}
+						sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap.get(statePrime);
 					}
 					Double qValue = reward + discount*sigmaT;
 					qMapAction.put(action, qValue);
-					if(qValue > maximum_qValue){
+					if(Math.abs(qValue - maximum_qValue) < 1e-3 * maximum_qValue){
 						maximum_qValue = qValue;
 						maximum_qValue_action = action;
-					}
-					if(Math.abs(qValue - maximum_qValue) < 1e-1 * maximum_qValue){
 						convergence = false;
 					}
-					System.out.println("State hashcode " + state.hashCode() + " qvalue : " + Double.toString(qValue) + " maximum_qValue " + Double.toString(maximum_qValue));
 				}
 				qMap.put(state, qMapAction);
 				valueOfStateMap.put(state, maximum_qValue);
 				bestOfStateMap.put(state, maximum_qValue_action);
 			}
-		}
 		}
 
 		private State getCurrentState(Vehicle vehicle, Task availableTask) {

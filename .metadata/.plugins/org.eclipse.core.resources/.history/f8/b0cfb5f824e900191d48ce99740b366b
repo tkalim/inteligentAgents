@@ -21,16 +21,6 @@ public class ReactiveSimulation implements ReactiveBehavior {
 	private double pPickup;
 	private int numActions;
 	private Agent myAgent;
-	private HashMap<State, Action_at> bestOfStateMap;
-	private HashMap<State, Double> valueOfStateMap;
-	private HashMap<State, HashMap<Action_at, Double>> qMap;
-
-	public ReactiveSimulation(){
-			bestOfStateMap = new HashMap<State, Action_at>();
-			valueOfStateMap = new HashMap<State, Double>();
-			qMap = new HashMap<State, HashMap<Action_at, Double>>();
-
-	}
 
 	@Override
 	public void setup(Topology topology, TaskDistribution td, Agent agent) {
@@ -50,7 +40,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 
 		//Creating the states
-		HashMap<Integer, State> states_map = new HashMap<Integer, State>();
+		Map<Integer, State> states_map = new HashMap<Integer, State>();
 		int id = 0;
 		for (City from : topology) {
 			for(City destination: topology) {
@@ -72,7 +62,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		// }
 
 		//Creating the actions
-		HashMap<Integer, Action_at> actionsMap = new HashMap<Integer, Action_at>();
+		Map<Integer, Action_at> actionsMap = new HashMap<Integer, Action_at>();
 		int action_id = 0;
 		for (City currentCity : topology) {
 			Action_at actionAccept = new Action_at(true, currentCity);
@@ -83,16 +73,15 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		}
 
 		//filling the Reward table
-		HashMap<State, HashMap<Action_at, Double>> rewardMap = new HashMap<State, HashMap<Action_at, Double>>();
+		Map<State, HashMap<Action_at, Double>> rewardMap = new HashMap<State, HashMap<Action_at, Double>>();
 		for (State state : states_map.values()) {
-			HashMap<Action_at, Double> rewardActionMap = new HashMap<Action_at, Double>();
+			Map<Action_at, Double> rewardActionMap = new HashMap<Action_at, Double>();
 			for (Action_at action : actionsMap.values()) {
-				double reward;
 				if(action.isAccept_task()){
-						reward = state.getAvailable_task().reward - costPerKm * state.getAvailable_task().pathLength();
+						Double reward = state.getAvailable_task().reward - costPerKm * state.getAvailable_task().pathLength();
 				}
 				else {
-					reward = - costPerKm * action.getNext_city().distanceTo(state.getCurrentCity());
+					Double reward = - costPerKm * action.getNext_city().distanceTo(state.getCurrentCity());
 				}
 				rewardActionMap.put(action, reward);
 			}
@@ -100,11 +89,11 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		}
 
 		//filling Transition Probability table
-		HashMap<State, HashMap<State, HashMap<Action_at, Double>>> transitionMap = new HashMap<State, HashMap<State, HashMap< Action_at, Double>>>();
+		Map<State, HashMap<State, HashMap<Action_at, Double>>> transitionMap = new HashMap<State, HashMap<State, <HashMap< Action_at, Double>>>();
 		for (State statePrime : states_map.values()) {
-			HashMap<State, HashMap<Action_at, Double>> transitionStateMap = new HashMap<State, HashMap<Action_at, Double>>();
+			Map<State, HashMap<Action_at, Double>> transitionStateMap = new HashMap<State, HashMap<Action_at, Double>>();
 			for (State state : states_map.values()) {
-				HashMap<Action_at, Double> transitionStateActionMap = new HashMap<Action_at, Double>();
+				Map<Action_at, Double> transitionStateActionMap = new HashMap<Action_at, Double>();
 				for (Action_at action : actionsMap.values()) {
 					Double transitionProbability = td.probability(action.getNext_city(), statePrime.getAvailable_task().deliveryCity);
 					transitionStateActionMap.put(action, transitionProbability);
@@ -116,46 +105,40 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 
 		//Offline training algorithm
-		//init of value of S
-		for (State state : states_map.values()){
-			valueOfStateMap.put(state, 1.0);
-		}
-		while (true) {
+		Map<State, Action_at> bestOfStateMap = new HashMap<State, Action_at>();
+		Map<State, Double> valueOfStateMap = new HashMap<State, Double>();
+		Map<State, HashMap<Action_at, Double>> qMap = new HashMap<State, HashMap<Action_at, Double>>();
+
+		while (True) {
 			Boolean convergence = true;
 			for (State state : states_map.values()) {
-				HashMap<Action_at, Double> qMapAction = new HashMap<Action_at, Double>();
-				Double maximum_qValue = 0.0;
+				Map<Action_at, Double> qMapAction = new HashMap<Action_at, Double>();
+				Double maximum_qValue = 0;
 				Action_at maximum_qValue_action = new Action_at();
 				for (Action_at action : actionsMap.values()){
-					Double reward = rewardMap.get(state).get(action);
+					Double reward = rewardMap.get(state).get(action)
 					//computing sigma Tconvergence
-					Double sigmaT = 0.0;
+					Double sigmaT = 0
 
 					for (State statePrime : states_map.values()){
-						if(valueOfStateMap.containsKey(statePrime)){
-							sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap.get(statePrime);
-						}
+						sigmaT += transitionMap.get(statePrime).get(state).get(action) * valueOfStateMap(statePrime);
 					}
 					Double qValue = reward + discount*sigmaT;
-					qMapAction.put(action, qValue);
-					if(qValue > maximum_qValue){
+					qMapAction.put(qValue, action);
+					if(Math.abs(qValue - maximum_qValue) < 1e-3 * maximum_qValue){
 						maximum_qValue = qValue;
 						maximum_qValue_action = action;
-					}
-					if(Math.abs(qValue - maximum_qValue) < 1e-1 * maximum_qValue){
 						convergence = false;
 					}
-					System.out.println("State hashcode " + state.hashCode() + " qvalue : " + Double.toString(qValue) + " maximum_qValue " + Double.toString(maximum_qValue));
 				}
-				qMap.put(state, qMapAction);
-				valueOfStateMap.put(state, maximum_qValue);
-				bestOfStateMap.put(state, maximum_qValue_action);
+				qMap.put(qMapAction, state);
+				valueOfStateMap.put(maximum_qValue, state);
+				bestOfStateMap.put(maximum_qValue_action, state);
 			}
-		}
 		}
 
 		private State getCurrentState(Vehicle vehicle, Task availableTask) {
-			City currentCity = vehicle.getCurrentCity();
+			currentCity = vehicle.getCurrentCity();
 			return new State(currentCity, availableTask);
 		}
 
@@ -165,8 +148,6 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 			State currentState = getCurrentState(vehicle, availableTask);
 			City currentCity = vehicle.getCurrentCity();
-			Action_at bestAction = bestOfStateMap.get(currentState);
-
 			if (bestAction.isAccept_task()) {
 				action = new Pickup(availableTask);
 			}

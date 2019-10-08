@@ -138,11 +138,10 @@ public class ReactiveSimulation implements ReactiveBehavior {
 					}
 					Double qValue = reward + discount*sigmaT;
 					qMapAction.put(action, qValue);
-					if(qValue > maximum_qValue){
+					if(Math.abs(qValue - maximum_qValue) < 1e-3 * maximum_qValue){
+						System.out.println("is in if");
 						maximum_qValue = qValue;
 						maximum_qValue_action = action;
-					}
-					if(Math.abs(qValue - maximum_qValue) < 1e-1 * maximum_qValue){
 						convergence = false;
 					}
 					System.out.println("State hashcode " + state.hashCode() + " qvalue : " + Double.toString(qValue) + " maximum_qValue " + Double.toString(maximum_qValue));
