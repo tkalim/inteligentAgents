@@ -3,6 +3,8 @@ package reactive;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import logist.agent.Agent;
 import logist.behavior.ReactiveBehavior;
@@ -41,10 +43,10 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 		// The state of being in the same city (no task)
 		tasks.add(null);
-		Boolean convergence = True;
-		while(convergence == True){
+		Boolean convergence = true;
+		while(convergence == true){
 			// we assume it is converging unless we found better improvement
-			convergence = True;
+			convergence = true;
 			for (City city : topology) {
 				for (City task : tasks) {
 					// skip state with task of the same city
@@ -60,7 +62,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 						// legal destination from state =
 						// neighboring cities + city of task
 						HashSet<City> legalDestinationsOfState =
-													new HashSet(state.city.neighbors());
+													new HashSet(state.getCity().neighbors());
 
 						//TODO: comment this one
 						if(state.getTask() != null)
@@ -79,7 +81,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 						if(Math.abs(bestStateActionQValue.getOrDefault(state, 0.0) - bestQValue) > 1e-3){
 							bestStateActionQValue.put(state, bestQValue);
 							bestStateAction.put(state, bestActionQvalue);
-							convergence = False;
+							convergence = false;
 						}
 					}
 				}
