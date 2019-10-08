@@ -35,7 +35,6 @@ public class State {
 					 + getCity() + " task: " + getTask();
 	}
 
-	// Eclipse generate this; no human should read it!
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

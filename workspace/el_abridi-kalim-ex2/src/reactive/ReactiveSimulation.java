@@ -83,13 +83,15 @@ public class ReactiveSimulation implements ReactiveBehavior {
 								System.out.println("I AM HERE");
 							double QValue = reward(state, action, td, agent) +
 															discount * sigmaTransitionProb(state, action, td);
+							if(task == null)
+								System.out.println("Qvalue = " + QValue);
 							//ystem.out.println("legalDestination = " + action + "QValue " + QValue);
 							if(bestQValue < QValue){
 								bestQValue = QValue;
 								bestActionQvalue = action;
 							}
 						}
-
+						System.out.println("state " + state + " bestQValue " + bestQValue);
 						if(!bestStateActionQValue.getOrDefault(state, 0.0).equals(bestQValue)){
 							System.out.println("I AM HERE2" + bestQValue);
 							bestStateActionQValue.put(state, bestQValue);
@@ -122,7 +124,7 @@ public class ReactiveSimulation implements ReactiveBehavior {
 		Double q = 0.0;
 		for (City taskP : tasks) {
 			State stateP = new State(action, taskP);
-			q += transitionProbability(state, action, stateP, td) * bestStateActionQValue.getOrDefault(state, 0.0);
+			q += transitionProbability(state, action, stateP, td) * bestStateActionQValue.getOrDefault(stateP, 0.0);
 		}
 		return q;
 
@@ -130,7 +132,8 @@ public class ReactiveSimulation implements ReactiveBehavior {
 
 	// probability to reach state stateP from State by taking action Action
 	private double transitionProbability(State state, City action, State stateP, TaskDistribution td) {
-		return state.getCity().equals(action) || state.getCity().equals(state.getTask()) || state.getCity().equals(stateP.getCity())
+		return state.getCity().equals(action) || state.getCity().equals(state.getTask())
+				|| state.getCity().equals(stateP.getCity())
 				|| !stateP.getCity().equals(action) ? 0.0 : td.probability(stateP.getCity(), stateP.getTask());
 	}
 
