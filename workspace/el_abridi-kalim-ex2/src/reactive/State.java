@@ -5,38 +5,34 @@ import logist.task.Task;
 
 public class State {
 
-	private City current_city;
-	private Task available_task;
-	private String state_id;
+	private City city;
+	private Task task;
 
-	public State(City current_city, Task available_task) {
-		this.current_city = current_city;
-		this.available_task = available_task;
+	public State(City city, Task task) {
+		this.city = city;
+		this.task = task;
 	}
 
-	public City getCurrentCity() {
-		return current_city;
+	public City getCity() {
+		return city;
 	}
 
-	public Task getAvailable_task() {
-		return available_task;
-	}
-
-	public String getState_id() {
-		return state_id;
+	public Task getTask() {
+		return task;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((current_city == null) ? 0 : current_city.hashCode());
-		result = prime * result + ((available_task == null) ? 0 : available_task.id);
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((task == null) ? 0 : task.id);
 		return result;
 	}
-	
+
 	public String toString() {
-		return "currentCity:" + getCurrentCity() + " available_task: " + available_task;
+		return "hashCode: " + hashCode() + " currentCity:"
+					 + getCity() + " task: " + getTask();
 	}
 
 }
