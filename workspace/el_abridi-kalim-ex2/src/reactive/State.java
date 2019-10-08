@@ -34,5 +34,27 @@ public class State {
 		return "hashCode: " + hashCode() + " currentCity:"
 					 + getCity() + " task: " + getTask();
 	}
-
+	
+	// Eclipse generate this; no human should read it!
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		if (city == null) {
+			if (other.city != null)
+				return false;
+		} else if (!city.equals(other.city))
+			return false;
+		if (task == null) {
+			if (other.task != null)
+				return false;
+		} else if (!task.equals(other.task))
+			return false;
+		return true;
+	}
 }
