@@ -32,7 +32,7 @@ public class BFS {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks, 0);
+		initialState = new State(vehicle, initialCity, tasks, currentTasks);
 		this.parentState = new HashMap<State, State>();
 		this.parentAction = new HashMap<State, Action>();
 	}
@@ -48,7 +48,6 @@ public class BFS {
 
 		// start with the initial state
 		queue.add(initialState);
-		int id = 0;
 		visitedStates.add(initialState);
 
 		while (queue.size() != 0) {
@@ -64,8 +63,7 @@ public class BFS {
 					remainingTasks.remove(remainingTask);
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
 					carryingTasks.add(remainingTask);
-					id++;
-					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, id);
+					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks);
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(nextState, state);
 						Pickup pickup = new Pickup(remainingTask);
@@ -81,8 +79,7 @@ public class BFS {
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
 					carryingTasks.remove(carryingTask);
 					TaskSet remainingTasks = state.getRemainingTasks().clone();
-					id++;
-					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, id);
+					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks);
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(nextState, state);
 						Delivery delivery = new Delivery(carryingTask);

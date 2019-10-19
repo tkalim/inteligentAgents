@@ -12,24 +12,20 @@ import java.util.Objects;
 import logist.simulation.Vehicle;
 
 public class State {
-	
+
 	private City currentCity;
 	private TaskSet carryingTasks;
 	private TaskSet remainingTasks;
 	private Vehicle vehicle;
 	private int currentCapacity;
-	public int id;
-	
-	//maybe some id ?
-	
-	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, int id) {
+
+	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks) {
 		super();
 		this.currentCity = currentCity;
 		this.remainingTasks = remainingTasks;
 		this.carryingTasks = carryingTasks;
 		this.vehicle = vehicle;
 		this.currentCapacity = getCurrentCapacity();
-		this.id = id;
 	}
 
 	public City getCurrentCity() {
@@ -43,16 +39,16 @@ public class State {
 	public TaskSet getRemainingTasks() {
 		return remainingTasks;
 	}
-	
+
 	public Vehicle getVehicle() {
 		return vehicle;
 	}
-	
-	
+
+
 	public Boolean isGoalState() {
 		return(this.carryingTasks.isEmpty() && this.remainingTasks.isEmpty());
 		}
-	
+
 	public int getCurrentCapacity() {
 		int payloadWeight = 0;
 		for (Task task : carryingTasks) {
@@ -79,7 +75,7 @@ public class State {
 				&& Objects.equals(currentCity, other.currentCity)
 				&& Objects.equals(remainingTasks, other.remainingTasks);
 	}
-	
 
-	
+
+
 }
