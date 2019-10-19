@@ -60,37 +60,41 @@ public class BFS {
 				return getPlan(state);
 			}
 
-			TaskSet unionOfTasks = TaskSet.union(state.getRemainingTasks(), state.getCarryingTasks());
-			for (Task task : unionOfTasks) {
-				if (state.getRemainingTasks().contains(task) && task.weight <= state.getCurrentCapacity()) {
+			for (Task remainingTask : state.getRemainingTasks()) {
+				if (remainingTask.weight <= state.getCurrentCapacity()) {
 					TaskSet remainingTasks = state.getRemainingTasks().clone();
-					remainingTasks.remove(task);
+					remainingTasks.remove(remainingTask);
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
-					carryingTasks.add(task);
+					carryingTasks.add(remainingTask);
 					id++;
-					State nextState = new State(vehicle, task.pickupCity, remainingTasks, carryingTasks, id);
+					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, id);
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(id, state);
-						Pickup pickup = new Pickup(task);
+						Pickup pickup = new Pickup(remainingTask);
 						this.parentAction.put(id, pickup);
 						queue.add(nextState);
 						visitedStates.add(nextState);
 					}
-				} else if (state.getCarryingTasks().contains(task)) {
+				}
+			}
+
+			for (Task carryingTask : state.getCarryingTasks()) {
+				if (state.getCarryingTasks().contains(carryingTask)) {
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
-					carryingTasks.remove(task);
+					carryingTasks.remove(carryingTask);
 					TaskSet remainingTasks = state.getRemainingTasks().clone();
 					id++;
-					State nextState = new State(vehicle, task.deliveryCity, remainingTasks, carryingTasks, id);
+					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, id);
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(id, state);
-						Delivery delivery = new Delivery(task);
+						Delivery delivery = new Delivery(carryingTask);
 						this.parentAction.put(id, delivery);
 						queue.add(nextState);
 						visitedStates.add(nextState);
 					}
 				}
 			}
+
 		}
 
 		throw new AssertionError("No goal state, weird !!");
@@ -98,9 +102,9 @@ public class BFS {
 	}
 
 	public Plan getPlan(State state) {
-
 		State currentState = state;
 		ArrayList<Action> actionList = new ArrayList<Action>();
+
 		// list to help fill in the move() actions
 		ArrayList<City> citiesList = new ArrayList<City>();
 		while (this.parentState.containsKey(currentState.id)) {
