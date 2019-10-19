@@ -5,8 +5,11 @@ import logist.task.TaskSet;
 import logist.simulation.Vehicle;
 import logist.plan.Plan;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+
 import logist.plan.Action;
 import logist.plan.Action.Delivery;
 import logist.plan.Action.Pickup;
@@ -38,7 +41,7 @@ public class BFS {
 
 		// create the queue and keep track of visited states
 		LinkedList<State> queue = new LinkedList<State>();
-		ArrayList<State> visitedStates = new ArrayList<State>();
+		Set<State> visitedStates = new HashSet<State>();
 		Vehicle vehicle = this.vehicle;
 		City initialCity = this.initialCity;
 		TaskSet tasks = this.tasks;
