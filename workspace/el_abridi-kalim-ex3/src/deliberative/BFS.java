@@ -134,14 +134,4 @@ public class BFS {
 		return plan;
 	}
 
-	public Boolean isStateVisited(State state, ArrayList<State> visitedStates) {
-		for (State visitedState : visitedStates) {
-			if ((visitedState.getCurrentCity().equals(state.getCurrentCity()))
-					&& (visitedState.getRemainingTasks().equals(state.getRemainingTasks()))
-					&& (visitedState.getCarryingTasks().equals(state.getCarryingTasks()))) {
-				return true;
-			}
-		}
-		return false;
-	}
 }
