@@ -5,9 +5,11 @@ import logist.task.TaskSet;
 import logist.simulation.Vehicle;
 import logist.plan.Plan;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -39,7 +41,7 @@ public class AStar {
 	public Plan search() {
 
 		// create the priority queue and keep track of visited states
-		PriorityQueue<State> queue = new PriorityQueue<State>(50, new StateComparator());
+		PriorityQueue<State> queue = new PriorityQueue<State>(new StateComparator());
 		Set<State> visitedStates = new HashSet<State>();
 		Vehicle vehicle = this.vehicle;
 		City initialCity = this.initialCity;
