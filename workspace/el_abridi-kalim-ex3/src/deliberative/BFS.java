@@ -70,7 +70,7 @@ public class BFS {
 		return getPlan(minCostState);
 
 	}
-
+	//TODO : Wrong implementation of getPlan (based on Naive) to be corrected
 	public Plan getPlan(State state) {
 		State currentState = state;
 		ArrayList<Action> actionList = new ArrayList<Action>();
