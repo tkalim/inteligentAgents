@@ -20,8 +20,9 @@ public class State {
 	private Vehicle vehicle;
 	private int currentCapacity;
 	private Action action;
+	private double accumulatedCost;
 
-	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action) {
+	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action, double accumulatedCost) {
 		super();
 		this.currentCity = currentCity;
 		this.remainingTasks = remainingTasks;
@@ -29,6 +30,7 @@ public class State {
 		this.vehicle = vehicle;
 		this.currentCapacity = getCurrentCapacity();
 		this.action = action;
+		this.accumulatedCost = accumulatedCost;
 	}
 
 	public City getCurrentCity() {
@@ -59,8 +61,13 @@ public class State {
 		return vehicle.capacity() - carryingTasks.weightSum();
 	}
 
+	public double getAccumulatedCost() {
+		return accumulatedCost;
+	}
+
 	public LinkedList<State> nextLegalStates(){
 		LinkedList<State> nextlegalstates = new LinkedList<State>();
+		int costPerKm = vehicle.costPerKm();
 
 		// adding states made of remaining task
 		for (Task remainingTask : getRemainingTasks()) {
@@ -70,7 +77,8 @@ public class State {
 				TaskSet carryingTasks = getCarryingTasks().clone();
 				carryingTasks.add(remainingTask);
 				Pickup pickup = new Pickup(remainingTask);
-				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup);
+				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(remainingTask.pickupCity);
+				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup, accumulatedCost);
 				nextlegalstates.add(nextState);
 			}
 		}
@@ -81,7 +89,8 @@ public class State {
 				carryingTasks.remove(carryingTask);
 				TaskSet remainingTasks = getRemainingTasks().clone();
 				Delivery delivery = new Delivery(carryingTask);
-				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery);
+				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
+				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost);
 				nextlegalstates.add(nextState);
 		}
 		return nextlegalstates;

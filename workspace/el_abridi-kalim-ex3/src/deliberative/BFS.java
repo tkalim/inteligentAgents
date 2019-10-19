@@ -33,7 +33,7 @@ public class BFS {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks, null);
+		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0);
 		this.parentState = new HashMap<State, State>();
 	}
 
@@ -45,6 +45,7 @@ public class BFS {
 		Vehicle vehicle = this.vehicle;
 		City initialCity = this.initialCity;
 		TaskSet tasks = this.tasks;
+		State minCostState = null;
 
 		// start with the initial state
 		queue.add(initialState);
@@ -53,8 +54,9 @@ public class BFS {
 		while (queue.size() != 0) {
 			State state = queue.poll();
 
-			if (state.isGoalState()) {
-				return getPlan(state);
+			if(state.isGoalState() &&
+			(minCostState == null || minCostState.getAccumulatedCost() > state.getAccumulatedCost())){
+				minCostState = state;
 			}
 
 			for (State nextState : state.nextLegalStates()) {
@@ -66,7 +68,7 @@ public class BFS {
 			}
 		}
 
-		throw new AssertionError("No goal state, weird !!");
+		return getPlan(minCostState);
 
 	}
 
