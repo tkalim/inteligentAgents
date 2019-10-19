@@ -7,6 +7,8 @@ import logist.plan.Action;
 import logist.plan.Action.Delivery;
 import logist.plan.Action.Pickup;
 import java.util.ArrayList;
+import java.util.Objects;
+
 import logist.simulation.Vehicle;
 
 public class State {
@@ -58,10 +60,26 @@ public class State {
 		}
 		return vehicle.capacity() - payloadWeight;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(carryingTasks, currentCapacity, currentCity, id, remainingTasks);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		return Objects.equals(carryingTasks, other.carryingTasks) && currentCapacity == other.currentCapacity
+				&& Objects.equals(currentCity, other.currentCity)
+				&& Objects.equals(remainingTasks, other.remainingTasks);
+	}
 	
-	
-//	public Boolean equals(State that) {
-//		return intersect(this.getCarryingTasks(), )
-//	}
+
 	
 }
