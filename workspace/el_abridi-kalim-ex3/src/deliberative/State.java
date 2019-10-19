@@ -56,11 +56,7 @@ public class State {
 		}
 
 	public int getCurrentCapacity() {
-		int payloadWeight = 0;
-		for (Task task : carryingTasks) {
-			payloadWeight += task.weight;
-		}
-		return vehicle.capacity() - payloadWeight;
+		return vehicle.capacity() - carryingTasks.weightSum();
 	}
 
 	public LinkedList<State> nextLegalStates(){
