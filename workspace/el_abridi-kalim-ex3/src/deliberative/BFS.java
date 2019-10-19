@@ -46,10 +46,13 @@ public class BFS {
 		// start with the initial state
 		queue.add(initialState);
 		int id = 0;
+		visitedStates.add(initialState);
 
 		while (queue.size() != 0) {
 			State state = queue.poll();
-			visitedStates.add(state);
+			//visitedStates.add(state);
+			System.out.println("////There are " + visitedStates.size() + "visited states");
+			
 
 			if (state.isGoalState()) {
 				System.out.println("found goal state");
@@ -59,11 +62,13 @@ public class BFS {
 			TaskSet unionOfTasks = TaskSet.union(state.getRemainingTasks(), state.getCarryingTasks());
 			for (Task task : unionOfTasks) {
 				if (state.getRemainingTasks().contains(task) && task.weight <= state.getCurrentCapacity()) {
-					System.out.println(id + " is being visitied as remaining task");
+					System.out.println(state.id + " is being visited as remaining task as child of " );
 					TaskSet remainingTasks = state.getRemainingTasks().clone();
 					remainingTasks.remove(task);
+					System.out.println("size of remaining task " + remainingTasks.size());
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
 					carryingTasks.add(task);
+					System.out.println("size of carrying task " + carryingTasks.size());
 					id++;
 					State nextState = new State(vehicle, task.pickupCity, remainingTasks, carryingTasks, id);
 					if (!isStateVisited(nextState, visitedStates)) {
@@ -71,14 +76,16 @@ public class BFS {
 						Pickup pickup = new Pickup(task);
 						this.parentAction.put(id, pickup);
 						queue.add(nextState);
+						visitedStates.add(nextState);
 						System.out.println(id + " has been added to queue");
 					}
 				} else if (state.getCarryingTasks().contains(task)) {
-					System.out.println(id + " is being visited as carrying task");
+					System.out.println(state.id + " is being visited as carrying task");
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
 					carryingTasks.remove(task);
+					System.out.println("size of carrying task " + carryingTasks.size());
 					TaskSet remainingTasks = state.getRemainingTasks().clone();
-					remainingTasks.add(task);
+					System.out.println("size of remaining task " + remainingTasks.size());
 					id++;
 					State nextState = new State(vehicle, task.deliveryCity, remainingTasks, carryingTasks, id);
 					if (!isStateVisited(nextState, visitedStates)) {
@@ -86,6 +93,7 @@ public class BFS {
 						Delivery delivery = new Delivery(task);
 						this.parentAction.put(id, delivery);
 						queue.add(nextState);
+						visitedStates.add(nextState);
 						System.out.println(id + "has been added to queue");
 					}
 				}
@@ -97,29 +105,32 @@ public class BFS {
 	}
 
 	public Plan getPlan(State state) {
+		
 		State currentState = state;
 		ArrayList<Action> actionList = new ArrayList<Action>();
 		// list to help fill in the move() actions
 		ArrayList<City> citiesList = new ArrayList<City>();
 		while (this.parentState.containsKey(currentState.id)) {
 			Action parentAction = this.parentAction.get(currentState.id);
-			citiesList.add(currentState.getCurrentCity());
+			citiesList.add(0, currentState.getCurrentCity());
 			currentState = parentState.get(currentState.id);
 			actionList.add(0, parentAction);
 		}
-
+		System.out.println(citiesList.toString());
 		// change variables here
 		City oldCity = this.initialCity;
 		Plan plan = new Plan(initialCity);
-		for (int i = actionList.size() - 1; i >= 0; i--) {
+		for (int i = 0;  i <= actionList.size() - 1 ; i++) {
 			Action action = actionList.get(i);
+			System.out.println(action.toString());
 			for (City city : oldCity.pathTo(citiesList.get(i))) {
 				plan.appendMove(city);
+				System.out.println(city.name);
 			}
 			oldCity = citiesList.get(i);
 			plan.append(action);
 		}
-
+		System.out.println(plan.toString());
 		return plan;
 	}
 

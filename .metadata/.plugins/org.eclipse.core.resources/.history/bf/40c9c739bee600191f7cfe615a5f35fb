@@ -1,8 +1,0 @@
-package reactive;
-
-import logist.topology.Topology.City;
-import logist.task.Task;
-
-public class state {
-
-}

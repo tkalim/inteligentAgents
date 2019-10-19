@@ -52,11 +52,11 @@ public class State {
 		}
 	
 	public int getCurrentCapacity() {
-		int paylodWeight = 0;
+		int payloadWeight = 0;
 		for (Task task : carryingTasks) {
-			paylodWeight += task.weight;
+			payloadWeight += task.weight;
 		}
-		return vehicle.capacity() - paylodWeight;
+		return vehicle.capacity() - payloadWeight;
 	}
 	
 	
