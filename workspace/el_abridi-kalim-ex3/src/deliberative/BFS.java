@@ -24,7 +24,6 @@ public class BFS {
 	private TaskSet tasks;
 	private TaskSet currentTasks;
 	public HashMap<State, State> parentState;
-	public HashMap<State, Action> stateAction;
 
 	public BFS(Vehicle vehicle, TaskSet tasks) {
 
