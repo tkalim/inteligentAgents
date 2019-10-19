@@ -53,8 +53,6 @@ public class BFS {
 
 		while (queue.size() != 0) {
 			State state = queue.poll();
-			//visitedStates.add(state);
-
 
 			if (state.isGoalState()) {
 				return getPlan(state);
