@@ -46,23 +46,6 @@ public class State {
 		return vehicle;
 	}
 	
-	public ArrayList getPossibleActions() {
-		ArrayList<Action> possibleActions = new ArrayList<Action>();
-		
-		for (Task carriedTask : this.carryingTasks) {
-			Delivery possibleAction = new Delivery(carriedTask); 
-			possibleActions.add(possibleAction);
-		}
-		
-		for (Task remainingTask : this.remainingTasks) {
-			Pickup possibleAction = new Pickup(remainingTask);
-			if (remainingTask.weight <= this.currentCapacity) {
-				possibleActions.add(possibleAction);
-			}
-		}
-		
-		return possibleActions;
-	}
 	
 	public Boolean isGoalState() {
 		return(this.carryingTasks.isEmpty() && this.remainingTasks.isEmpty());
@@ -75,5 +58,10 @@ public class State {
 		}
 		return vehicle.capacity() - paylodWeight;
 	}
+	
+	
+//	public Boolean equals(State that) {
+//		return intersect(this.getCarryingTasks(), )
+//	}
 	
 }
