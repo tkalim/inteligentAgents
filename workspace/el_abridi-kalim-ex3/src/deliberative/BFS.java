@@ -23,7 +23,7 @@ public class BFS {
 	private TaskSet tasks;
 	private TaskSet currentTasks;
 	public HashMap<State, State> parentState;
-	public HashMap<State, Action> parentAction;
+	public HashMap<State, Action> stateAction;
 
 	public BFS(Vehicle vehicle, TaskSet tasks) {
 
@@ -34,7 +34,7 @@ public class BFS {
 
 		initialState = new State(vehicle, initialCity, tasks, currentTasks);
 		this.parentState = new HashMap<State, State>();
-		this.parentAction = new HashMap<State, Action>();
+		this.stateAction = new HashMap<State, Action>();
 	}
 
 	public Plan search() {
@@ -67,7 +67,7 @@ public class BFS {
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(nextState, state);
 						Pickup pickup = new Pickup(remainingTask);
-						this.parentAction.put(nextState, pickup);
+						this.stateAction.put(nextState, pickup);
 						queue.add(nextState);
 						visitedStates.add(nextState);
 					}
@@ -83,7 +83,7 @@ public class BFS {
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(nextState, state);
 						Delivery delivery = new Delivery(carryingTask);
-						this.parentAction.put(nextState, delivery);
+						this.stateAction.put(nextState, delivery);
 						queue.add(nextState);
 						visitedStates.add(nextState);
 					}
@@ -103,7 +103,7 @@ public class BFS {
 		// list to help fill in the move() actions
 		ArrayList<City> citiesList = new ArrayList<City>();
 		while (this.parentState.containsKey(currentState)) {
-			Action parentAction = this.parentAction.get(currentState);
+			Action parentAction = this.stateAction.get(currentState);
 			citiesList.add(currentState.getCurrentCity());
 			currentState = parentState.get(currentState);
 			actionList.add(parentAction);
