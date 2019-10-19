@@ -22,7 +22,7 @@ public class BFS {
 	private City initialCity;
 	private TaskSet tasks;
 	private TaskSet currentTasks;
-	public HashMap<Integer, State> parentState;
+	public HashMap<State, State> parentState;
 	public HashMap<Integer, Action> parentAction;
 
 	public BFS(Vehicle vehicle, TaskSet tasks) {
@@ -33,7 +33,7 @@ public class BFS {
 		this.currentTasks = vehicle.getCurrentTasks();
 
 		initialState = new State(vehicle, initialCity, tasks, currentTasks, 0);
-		this.parentState = new HashMap<Integer, State>();
+		this.parentState = new HashMap<State, State>();
 		this.parentAction = new HashMap<Integer, Action>();
 	}
 
@@ -69,7 +69,7 @@ public class BFS {
 					id++;
 					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, id);
 					if (!visitedStates.contains(nextState)) {
-						this.parentState.put(id, state);
+						this.parentState.put(nextState, state);
 						Pickup pickup = new Pickup(remainingTask);
 						this.parentAction.put(id, pickup);
 						queue.add(nextState);
@@ -86,7 +86,7 @@ public class BFS {
 					id++;
 					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, id);
 					if (!visitedStates.contains(nextState)) {
-						this.parentState.put(id, state);
+						this.parentState.put(nextState, state);
 						Delivery delivery = new Delivery(carryingTask);
 						this.parentAction.put(id, delivery);
 						queue.add(nextState);
@@ -107,10 +107,10 @@ public class BFS {
 
 		// list to help fill in the move() actions
 		ArrayList<City> citiesList = new ArrayList<City>();
-		while (this.parentState.containsKey(currentState.id)) {
+		while (this.parentState.containsKey(currentState)) {
 			Action parentAction = this.parentAction.get(currentState.id);
 			citiesList.add(0, currentState.getCurrentCity());
-			currentState = parentState.get(currentState.id);
+			currentState = parentState.get(currentState);
 			actionList.add(0, parentAction);
 		}
 		// change variables here
