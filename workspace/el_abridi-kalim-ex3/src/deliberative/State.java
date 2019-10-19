@@ -7,6 +7,7 @@ import logist.plan.Action;
 import logist.plan.Action.Delivery;
 import logist.plan.Action.Pickup;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 import logist.simulation.Vehicle;
@@ -60,6 +61,34 @@ public class State {
 			payloadWeight += task.weight;
 		}
 		return vehicle.capacity() - payloadWeight;
+	}
+
+	public LinkedList<State> nextLegalStates(){
+		LinkedList<State> nextlegalstates = new LinkedList<State>();
+
+		// adding states made of remaining task
+		for (Task remainingTask : getRemainingTasks()) {
+			if (remainingTask.weight <= getCurrentCapacity()) {
+				TaskSet remainingTasks = getRemainingTasks().clone();
+				remainingTasks.remove(remainingTask);
+				TaskSet carryingTasks = getCarryingTasks().clone();
+				carryingTasks.add(remainingTask);
+				Pickup pickup = new Pickup(remainingTask);
+				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup);
+				nextlegalstates.add(nextState);
+			}
+		}
+
+		// adding states made of carrying task
+		for (Task carryingTask : getCarryingTasks()) {
+				TaskSet carryingTasks = getCarryingTasks().clone();
+				carryingTasks.remove(carryingTask);
+				TaskSet remainingTasks = getRemainingTasks().clone();
+				Delivery delivery = new Delivery(carryingTask);
+				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery);
+				nextlegalstates.add(nextState);
+		}
+		return nextlegalstates;
 	}
 
 	@Override

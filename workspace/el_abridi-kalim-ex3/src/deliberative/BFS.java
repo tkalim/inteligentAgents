@@ -56,37 +56,13 @@ public class BFS {
 				return getPlan(state);
 			}
 
-			for (Task remainingTask : state.getRemainingTasks()) {
-				if (remainingTask.weight <= state.getCurrentCapacity()) {
-					TaskSet remainingTasks = state.getRemainingTasks().clone();
-					remainingTasks.remove(remainingTask);
-					TaskSet carryingTasks = state.getCarryingTasks().clone();
-					carryingTasks.add(remainingTask);
-					Pickup pickup = new Pickup(remainingTask);
-					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup);
-					if (!visitedStates.contains(nextState)) {
-						this.parentState.put(nextState, state);
-						queue.add(nextState);
-						visitedStates.add(nextState);
-					}
+			for (State nextState : state.nextLegalStates()) {
+				if (!visitedStates.contains(nextState)) {
+					this.parentState.put(nextState, state);
+					queue.add(nextState);
+					visitedStates.add(nextState);
 				}
 			}
-
-			for (Task carryingTask : state.getCarryingTasks()) {
-				if (state.getCarryingTasks().contains(carryingTask)) {
-					TaskSet carryingTasks = state.getCarryingTasks().clone();
-					carryingTasks.remove(carryingTask);
-					TaskSet remainingTasks = state.getRemainingTasks().clone();
-					Delivery delivery = new Delivery(carryingTask);
-					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery);
-					if (!visitedStates.contains(nextState)) {
-						this.parentState.put(nextState, state);
-						queue.add(nextState);
-						visitedStates.add(nextState);
-					}
-				}
-			}
-
 		}
 
 		throw new AssertionError("No goal state, weird !!");
