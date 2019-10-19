@@ -18,14 +18,16 @@ public class State {
 	private TaskSet remainingTasks;
 	private Vehicle vehicle;
 	private int currentCapacity;
+	private Action action;
 
-	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks) {
+	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action) {
 		super();
 		this.currentCity = currentCity;
 		this.remainingTasks = remainingTasks;
 		this.carryingTasks = carryingTasks;
 		this.vehicle = vehicle;
 		this.currentCapacity = getCurrentCapacity();
+		this.action = action;
 	}
 
 	public City getCurrentCity() {
@@ -44,6 +46,9 @@ public class State {
 		return vehicle;
 	}
 
+	public Action getAction() {
+		return action;
+	}
 
 	public Boolean isGoalState() {
 		return(this.carryingTasks.isEmpty() && this.remainingTasks.isEmpty());

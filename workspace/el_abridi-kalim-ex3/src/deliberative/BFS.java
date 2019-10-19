@@ -32,9 +32,8 @@ public class BFS {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks);
+		initialState = new State(vehicle, initialCity, tasks, currentTasks, null);
 		this.parentState = new HashMap<State, State>();
-		this.stateAction = new HashMap<State, Action>();
 	}
 
 	public Plan search() {
@@ -63,11 +62,10 @@ public class BFS {
 					remainingTasks.remove(remainingTask);
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
 					carryingTasks.add(remainingTask);
-					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks);
+					Pickup pickup = new Pickup(remainingTask);
+					State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup);
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(nextState, state);
-						Pickup pickup = new Pickup(remainingTask);
-						this.stateAction.put(nextState, pickup);
 						queue.add(nextState);
 						visitedStates.add(nextState);
 					}
@@ -79,11 +77,10 @@ public class BFS {
 					TaskSet carryingTasks = state.getCarryingTasks().clone();
 					carryingTasks.remove(carryingTask);
 					TaskSet remainingTasks = state.getRemainingTasks().clone();
-					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks);
+					Delivery delivery = new Delivery(carryingTask);
+					State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery);
 					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(nextState, state);
-						Delivery delivery = new Delivery(carryingTask);
-						this.stateAction.put(nextState, delivery);
 						queue.add(nextState);
 						visitedStates.add(nextState);
 					}
@@ -103,10 +100,10 @@ public class BFS {
 		// list to help fill in the move() actions
 		ArrayList<City> citiesList = new ArrayList<City>();
 		while (this.parentState.containsKey(currentState)) {
-			Action parentAction = this.stateAction.get(currentState);
+			Action action = currentState.getAction();
 			citiesList.add(currentState.getCurrentCity());
 			currentState = parentState.get(currentState);
-			actionList.add(parentAction);
+			actionList.add(action);
 		}
 		// change variables here
 		City oldCity = this.initialCity;
