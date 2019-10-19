@@ -71,7 +71,7 @@ public class BFS {
 					System.out.println("size of carrying task " + carryingTasks.size());
 					id++;
 					State nextState = new State(vehicle, task.pickupCity, remainingTasks, carryingTasks, id);
-					if (!isStateVisited(nextState, visitedStates)) {
+					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(id, state);
 						Pickup pickup = new Pickup(task);
 						this.parentAction.put(id, pickup);
@@ -88,7 +88,7 @@ public class BFS {
 					System.out.println("size of remaining task " + remainingTasks.size());
 					id++;
 					State nextState = new State(vehicle, task.deliveryCity, remainingTasks, carryingTasks, id);
-					if (!isStateVisited(nextState, visitedStates)) {
+					if (!visitedStates.contains(nextState)) {
 						this.parentState.put(id, state);
 						Delivery delivery = new Delivery(task);
 						this.parentAction.put(id, delivery);
