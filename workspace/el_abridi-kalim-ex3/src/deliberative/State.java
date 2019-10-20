@@ -117,7 +117,8 @@ public class State {
 		State other = (State) obj;
 		return Objects.equals(carryingTasks, other.carryingTasks) && currentCapacity == other.currentCapacity
 				&& Objects.equals(currentCity, other.currentCity)
-				&& Objects.equals(remainingTasks, other.remainingTasks);
+				&& Objects.equals(remainingTasks, other.remainingTasks)
+				&& this.accumulatedCost == other.accumulatedCost;
 	}
 
 

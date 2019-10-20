@@ -57,17 +57,20 @@ public class Deliberative implements DeliberativeBehavior {
 			// ...
 			// TODO: go back to naive implementation for analysis
 			//plan = naivePlan(vehicle, tasks);
+			System.out.println("Algorithm used for search: ASTAR");
 			AStar aStar = new AStar(vehicle, tasks);
 			plan = aStar.search();
 			break;
 		case BFS:
 			// ...
+			System.out.println("Algorithm used for search: BFS");
 			BFS bfs = new BFS(vehicle, tasks);
 			plan = bfs.search();
 			break;
 		default:
 			throw new AssertionError("Should not happen.");
 		}
+		System.out.println(plan.toString());
 		return plan;
 	}
 

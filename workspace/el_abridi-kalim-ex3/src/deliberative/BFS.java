@@ -67,7 +67,12 @@ public class BFS {
 			}
 		}
 
-		return getPlan(minCostState);
+		if (minCostState == null) {
+			throw new AssertionError("No goal state found !");
+		}
+		else {
+			return getPlan(minCostState);
+		}
 
 	}
 	//TODO : Wrong implementation of getPlan (based on Naive) to be corrected
