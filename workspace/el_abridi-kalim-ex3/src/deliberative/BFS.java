@@ -49,9 +49,14 @@ public class BFS {
 		// start with the initial state
 		queue.add(initialState);
 		visitedStates.add(initialState);
-
+		int counter = 0;
 		while (queue.size() != 0) {
 			State state = queue.poll();
+			
+			if(state.isGoalState()) {
+				counter++;
+				System.out.println(counter);
+			}
 
 			if(state.isGoalState() &&
 			(minCostState == null || minCostState.getAccumulatedCost() > state.getAccumulatedCost())){
