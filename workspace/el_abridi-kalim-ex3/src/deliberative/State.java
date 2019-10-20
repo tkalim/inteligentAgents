@@ -30,7 +30,7 @@ public class State {
 		this.remainingTasks = remainingTasks;
 		this.carryingTasks = carryingTasks;
 		this.vehicle = vehicle;
-		this.currentCapacity = getCurrentCapacity();
+		this.currentCapacity = vehicle.capacity() - carryingTasks.weightSum();
 		this.action = action;
 		this.accumulatedCost = accumulatedCost;
 		this.heuristic = heuristic;
@@ -65,7 +65,7 @@ public class State {
 		}
 
 	public int getCurrentCapacity() {
-		return vehicle.capacity() - carryingTasks.weightSum();
+		return currentCapacity;
 	}
 
 	public double getAccumulatedCost() {
