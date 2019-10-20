@@ -32,7 +32,7 @@ public class BFS {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0);
+		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0, 0.0);
 		this.parentState = new HashMap<State, State>();
 	}
 

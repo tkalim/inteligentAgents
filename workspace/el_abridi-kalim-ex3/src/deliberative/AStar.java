@@ -34,7 +34,7 @@ public class AStar {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0);
+		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0, 0.0);
 		this.parentState = new HashMap<State, State>();
 	}
 
@@ -77,9 +77,9 @@ public class AStar {
     // Overriding compare()method of Comparator for ascending order of cost function
     // First version of the heuristics based on the accumulatedCost only
     public int compare(State s1, State s2) {
-      if (s1.getAccumulatedCost() < s2.getAccumulatedCost())
+      if (s1.getAccumulatedCost() + s1.getHeuristic() < s2.getAccumulatedCost() + s2.getHeuristic())
         return -1;
-      else if (s1.getAccumulatedCost() > s2.getAccumulatedCost())
+      else if (s1.getAccumulatedCost() + s1.getHeuristic() > s2.getAccumulatedCost() + s2.getHeuristic())
         return 1;
       return 0;
     }
