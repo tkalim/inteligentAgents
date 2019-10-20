@@ -101,7 +101,7 @@ public class State {
 				Delivery delivery = new Delivery(carryingTask);
 				// heuristic for task to be delivered: weight of the task.
 				// the heavier it is the faster we want to deliver it to have more room for other tasks
-				double heuristic = -carryingTask.weight*carryingTask.pathLength();
+				double heuristic = -carryingTask.weight*getCurrentCity().distanceTo(carryingTask.deliveryCity);
 				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
 				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost, heuristic);
 				nextlegalstates.add(nextState);
