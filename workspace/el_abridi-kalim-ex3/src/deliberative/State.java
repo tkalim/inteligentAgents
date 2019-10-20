@@ -9,6 +9,7 @@ import logist.plan.Action.Pickup;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Collections;
 
 import logist.simulation.Vehicle;
 
@@ -93,6 +94,10 @@ public class State {
 				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost);
 				nextlegalstates.add(nextState);
 		}
+		
+		// shuffle the results to prevent a similar implementation to the naive (1st pickup 2nd delivery)
+		Collections.shuffle(nextlegalstates);
+		
 		return nextlegalstates;
 	}
 
