@@ -103,7 +103,7 @@ public class State {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(carryingTasks, currentCapacity, currentCity, remainingTasks);
+		return Objects.hash(carryingTasks, currentCapacity, currentCity, remainingTasks, accumulatedCost);
 	}
 
 	@Override
