@@ -87,7 +87,7 @@ public class State {
 				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(remainingTask.pickupCity);
 				// heuristic for task to be picked-up: distance between pickupCity and DeliveryCity of that task
 				// the longer the distance the less good it is to prioritize
-				double heuristic = remainingTask.pathLength();
+				double heuristic = remainingTask.weight*remainingTask.pathLength();
 				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup, accumulatedCost, heuristic);
 				nextlegalstates.add(nextState);
 			}
@@ -101,7 +101,7 @@ public class State {
 				Delivery delivery = new Delivery(carryingTask);
 				// heuristic for task to be delivered: weight of the task.
 				// the heavier it is the faster we want to deliver it to have more room for other tasks
-				double heuristic = -carryingTask.weight;
+				double heuristic = -carryingTask.weight*carryingTask.pathLength();
 				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
 				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost, heuristic);
 				nextlegalstates.add(nextState);
