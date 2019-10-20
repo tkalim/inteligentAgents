@@ -51,15 +51,26 @@ public class AStar {
 		// start with the initial state
 		queue.add(initialState);
 		visitedStates.add(initialState);
+		int nbExploredGoalState = 0;
+		int nbExploredState = 0;
+		int nbExploreGoalStateBeforeFindingOptimal = 0;
+		int nbExploreStateBeforeFindingOptimal = 0;
 
 		while (queue.size() != 0) {
 			State state = queue.poll();
 
+			if(state.isGoalState()) {
+				nbExploredGoalState++;
+			}
+			nbExploredState++;
+
 			if(state.isGoalState() &&
 			(minCostState == null || minCostState.getAccumulatedCost() > state.getAccumulatedCost())){
 				minCostState = state;
+				nbExploreGoalStateBeforeFindingOptimal = nbExploredGoalState;
+				nbExploreStateBeforeFindingOptimal = nbExploredState;
 			}
-
+			
 			for (State nextState : state.nextLegalStates()) {
 				if (!visitedStates.contains(nextState)) {
 					this.parentState.put(nextState, state);
@@ -68,9 +79,17 @@ public class AStar {
 				}
 			}
 		}
-
-		return getPlan(minCostState);
-
+		// printing statistics
+		System.out.println("nbExploreGoalStateBeforeFindingOptimal = " + String.valueOf(nbExploreGoalStateBeforeFindingOptimal));
+		System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploreStateBeforeFindingOptimal));
+		
+		if (minCostState == null) {
+			throw new AssertionError("No goal state found !");
+		}
+		else {
+			return getPlan(minCostState);
+		}
+		
 	}
 
   class StateComparator implements Comparator<State>{

@@ -49,18 +49,24 @@ public class BFS {
 		// start with the initial state
 		queue.add(initialState);
 		visitedStates.add(initialState);
-		int counter = 0;
+		int nbExploredGoalState = 0;
+		int nbExploredState = 0;
+		int nbExploreGoalStateBeforeFindingOptimal = 0;
+		int nbExploreStateBeforeFindingOptimal = 0;
+
 		while (queue.size() != 0) {
 			State state = queue.poll();
 			
 			if(state.isGoalState()) {
-				counter++;
-				System.out.println(counter);
+				nbExploredGoalState++;
 			}
+			nbExploredState++;
 
 			if(state.isGoalState() &&
 			(minCostState == null || minCostState.getAccumulatedCost() > state.getAccumulatedCost())){
 				minCostState = state;
+				nbExploreGoalStateBeforeFindingOptimal = nbExploredGoalState;
+				nbExploreStateBeforeFindingOptimal = nbExploredState;
 			}
 
 			for (State nextState : state.nextLegalStates()) {
@@ -71,7 +77,11 @@ public class BFS {
 				}
 			}
 		}
-
+		
+		// printing statistics
+		System.out.println("nbExploreGoalStateBeforeFindingOptimal = " + String.valueOf(nbExploreGoalStateBeforeFindingOptimal));
+		System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploreStateBeforeFindingOptimal));
+		
 		if (minCostState == null) {
 			throw new AssertionError("No goal state found !");
 		}
