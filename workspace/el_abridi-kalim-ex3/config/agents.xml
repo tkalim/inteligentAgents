@@ -7,6 +7,36 @@
 	<agent name="deliberative-random">
 		<set class-path="bin/"/>
 		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="NAIVE"/>
+	</agent>
+	<agent name="bfs-1">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="BFS"/>
+	</agent>
+	<agent name="bfs-2">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="BFS"/>
+	</agent>
+	<agent name="bfs-3">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="BFS"/>
+	</agent>
+	<agent name="astar-1">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="ASTAR"/>
+	</agent>
+	<agent name="astar-2">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="ASTAR"/>
+	</agent>
+	<agent name="astar-3">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
 		<set algorithm="ASTAR"/>
 	</agent>
 	
