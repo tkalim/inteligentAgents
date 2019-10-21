@@ -85,16 +85,6 @@ public class State {
 				carryingTasks.add(remainingTask);
 				Pickup pickup = new Pickup(remainingTask);
 				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(remainingTask.pickupCity);
-				/*
-					heuristic for task to be picked-up: since a pick-up task will require to keep the weight
-					in the vehicle for (DestinationCity - pickUpCity) distance, we need to prioritize:
-						1 - pick-up task with shorter distance to deliver.
-						2 - minimum weight to be transported since the pick-up task will prevent from picking up and delivering other task over that distance.
-						 => combine the two with the following heuristic: cost = (delivery - pickup) distant * weightOfTask
-					effects:
-						- Tasks with shorter delivery distances and lighter weight will be prioritized.
-						- Tasks with heavy weight/larger distance to delivery will have less priorited in order to deliver maximum of tasks over shorter distance
-				*/
 				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup, accumulatedCost);
 				nextlegalstates.add(nextState);
 			}
@@ -106,17 +96,6 @@ public class State {
 				carryingTasks.remove(carryingTask);
 				TaskSet remainingTasks = getRemainingTasks().clone();
 				Delivery delivery = new Delivery(carryingTask);
-				/*
-					heuristic for task to be delivered: since a delivery task already carried prevent as from collecting other tasks from pick-up along the way
-					we need to prioritize tasks to deliver ASAP that have heavy weight, and shorter distance to deliveryCity (deliveryCity - currentCity),
-					we then need to prioritize:
-						1 - delivering tasks with shorter distance to destination from currentCity.
-						2 - delivering tasks that have maximum weight first to free capacity in the vehicle for more tasks to be picked-up
-						 => combine the two with the following heuristic: cost = -((delivery - current) distant * weightOfTask)
-					effects:
-						- Tasks with shorter delivery distances from currentCity (TODO: not really formula should tweaked, inverse maybe?) and larger weight will be prioritized.
-						- Tasks with lighter weight/larger distance to delivery will have less priorited in order to free maximum capacity over shorter distance
-				*/
 				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
 				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost);
 				nextlegalstates.add(nextState);
@@ -145,6 +124,7 @@ public class State {
 		return Objects.equals(carryingTasks, other.carryingTasks) && currentCapacity == other.currentCapacity
 				&& Objects.equals(currentCity, other.currentCity)
 				&& Objects.equals(remainingTasks, other.remainingTasks)
+				// "==" gives best result in A*, but is it correct ?
 				&& this.accumulatedCost == other.accumulatedCost;
 	}
 	
