@@ -60,6 +60,7 @@ public class Deliberative implements DeliberativeBehavior {
 			System.out.println("Algorithm used for search: ASTAR");
 			AStar aStar = new AStar(vehicle, tasks);
 			plan = aStar.search();
+			System.out.println(plan.toString());
 			break;
 		case BFS:
 			// ...

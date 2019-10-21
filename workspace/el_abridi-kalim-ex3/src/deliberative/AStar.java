@@ -9,6 +9,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,77 +35,71 @@ public class AStar {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0, 0.0);
+		//TODO: Initial accumulatedCost should maybe != 0 (will depend on logist handling canceled plans)
+		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0);
 		this.parentState = new HashMap<State, State>();
 	}
 
 	public Plan search() {
 
 		// create the priority queue and keep track of visited states
-		PriorityQueue<State> queue = new PriorityQueue<State>(new StateComparator());
+		//The queue is not sorted, it's the list of child states that is
+		//PriorityQueue<State> queue = new PriorityQueue<State>(new StateComparator());
+		LinkedList<State> queue = new LinkedList<State>();
 		Set<State> visitedStates = new HashSet<State>();
+		LinkedList<State> childStates = new LinkedList<State>();
 		Vehicle vehicle = this.vehicle;
 		City initialCity = this.initialCity;
 		TaskSet tasks = this.tasks;
-		State minCostState = null;
 
 		// start with the initial state
 		queue.add(initialState);
 		visitedStates.add(initialState);
-		int nbExploredGoalState = 0;
 		int nbExploredState = 0;
-		int nbExploreGoalStateBeforeFindingOptimal = 0;
-		int nbExploreStateBeforeFindingOptimal = 0;
 
 		while (queue.size() != 0) {
 			State state = queue.poll();
 
-			if(state.isGoalState()) {
-				nbExploredGoalState++;
+			//A* returns first goal states it finds
+			if (state.isGoalState()) {
+				nbExploredState++;
+				System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploredState));
+				return getPlan(state);
 			}
 			nbExploredState++;
 
-			if(state.isGoalState() &&
-			(minCostState == null || minCostState.getAccumulatedCost() > state.getAccumulatedCost())){
-				minCostState = state;
-				nbExploreGoalStateBeforeFindingOptimal = nbExploredGoalState;
-				nbExploreStateBeforeFindingOptimal = nbExploredState;
-			}
-			
+			childStates.clear();
 			for (State nextState : state.nextLegalStates()) {
 				if (!visitedStates.contains(nextState)) {
 					this.parentState.put(nextState, state);
-					queue.add(nextState);
+					childStates.add(nextState);
 					visitedStates.add(nextState);
 				}
 			}
+			//Sorting child states
+			Collections.sort(childStates, new StateComparator());
+			//Merging the child states and the queue
+			queue.addAll(childStates);
+			
 		}
 		// printing statistics
-		System.out.println("nbExploreGoalStateBeforeFindingOptimal = " + String.valueOf(nbExploreGoalStateBeforeFindingOptimal));
-		System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploreStateBeforeFindingOptimal));
-		
-		if (minCostState == null) {
-			throw new AssertionError("No goal state found !");
-		}
-		else {
-			return getPlan(minCostState);
-		}
-		
+
+		throw new AssertionError("No goal state found !");
+
 	}
 
-  class StateComparator implements Comparator<State>{
-    // Overriding compare()method of Comparator for ascending order of cost function
-    // First version of the heuristics based on the accumulatedCost only
-    public int compare(State s1, State s2) {
-      if (s1.getAccumulatedCost() + s1.getHeuristic() < s2.getAccumulatedCost() + s2.getHeuristic())
-        return -1;
-      else if (s1.getAccumulatedCost() + s1.getHeuristic() > s2.getAccumulatedCost() + s2.getHeuristic())
-        return 1;
-      return 0;
-    }
-  }
+	class StateComparator implements Comparator<State> {
+		// Overriding compare()method of Comparator for ascending order of cost function
+		// First version of the heuristics based on the accumulatedCost only
+		public int compare(State s1, State s2) {
+			if (s1.getAccumulatedCost() + s1.getHeuristic() < s2.getAccumulatedCost() + s2.getHeuristic())
+				return -1;
+			else if (s1.getAccumulatedCost() + s1.getHeuristic() > s2.getAccumulatedCost() + s2.getHeuristic())
+				return 1;
+			return 0;
+		}
+	}
 
-  //TODO : Wrong implementation of getPlan (based on Naive) to be corrected
 	public Plan getPlan(State state) {
 		State currentState = state;
 		ArrayList<Action> actionList = new ArrayList<Action>();
@@ -120,7 +115,7 @@ public class AStar {
 		// change variables here
 		City oldCity = this.initialCity;
 		Plan plan = new Plan(initialCity);
-		for (int i = actionList.size() - 1;  i >= 0 ; i--) {
+		for (int i = actionList.size() - 1; i >= 0; i--) {
 			Action action = actionList.get(i);
 			for (City city : oldCity.pathTo(citiesList.get(i))) {
 				plan.appendMove(city);

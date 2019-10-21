@@ -24,7 +24,7 @@ public class State {
 	private double accumulatedCost;
 	private double heuristic;
 
-	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action, double accumulatedCost, double heuristic) {
+	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action, double accumulatedCost) {
 		super();
 		this.currentCity = currentCity;
 		this.remainingTasks = remainingTasks;
@@ -33,7 +33,7 @@ public class State {
 		this.currentCapacity = vehicle.capacity() - carryingTasks.weightSum();
 		this.action = action;
 		this.accumulatedCost = accumulatedCost;
-		this.heuristic = heuristic;
+		this.heuristic = this.computeHeuristic();
 	}
 
 	public City getCurrentCity() {
@@ -95,8 +95,7 @@ public class State {
 						- Tasks with shorter delivery distances and lighter weight will be prioritized.
 						- Tasks with heavy weight/larger distance to delivery will have less priorited in order to deliver maximum of tasks over shorter distance
 				*/
-				double heuristic = remainingTask.weight*remainingTask.pathLength();
-				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup, accumulatedCost, heuristic);
+				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup, accumulatedCost);
 				nextlegalstates.add(nextState);
 			}
 		}
@@ -118,9 +117,8 @@ public class State {
 						- Tasks with shorter delivery distances from currentCity (TODO: not really formula should tweaked, inverse maybe?) and larger weight will be prioritized.
 						- Tasks with lighter weight/larger distance to delivery will have less priorited in order to free maximum capacity over shorter distance
 				*/
-				double heuristic = -carryingTask.weight*getCurrentCity().distanceTo(carryingTask.deliveryCity);
 				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
-				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost, heuristic);
+				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost);
 				nextlegalstates.add(nextState);
 		}
 
@@ -148,6 +146,19 @@ public class State {
 				&& Objects.equals(currentCity, other.currentCity)
 				&& Objects.equals(remainingTasks, other.remainingTasks)
 				&& this.accumulatedCost == other.accumulatedCost;
+	}
+	
+	
+	private double computeHeuristic() {
+		double heuristic = 0.0;
+		for (Task task: this.carryingTasks) {
+			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
+		}
+		for (Task task: this.remainingTasks) {
+			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.pickupCity);
+			heuristic += this.vehicle.costPerKm() * task.pickupCity.distanceTo(task.deliveryCity);
+		}
+		return heuristic;
 	}
 
 

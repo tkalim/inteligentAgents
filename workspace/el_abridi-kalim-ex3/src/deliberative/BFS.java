@@ -32,7 +32,7 @@ public class BFS {
 		this.initialCity = vehicle.getCurrentCity();
 		this.currentTasks = vehicle.getCurrentTasks();
 
-		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0, 0.0);
+		initialState = new State(vehicle, initialCity, tasks, currentTasks, null, 0.0);
 		this.parentState = new HashMap<State, State>();
 	}
 
@@ -90,7 +90,6 @@ public class BFS {
 		}
 
 	}
-	//TODO : Wrong implementation of getPlan (based on Naive) to be corrected
 	public Plan getPlan(State state) {
 		State currentState = state;
 		ArrayList<Action> actionList = new ArrayList<Action>();
