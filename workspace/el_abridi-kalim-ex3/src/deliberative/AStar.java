@@ -45,9 +45,8 @@ public class AStar {
 		// create the priority queue and keep track of visited states
 		//The queue is not sorted, it's the list of child states that is
 		//PriorityQueue<State> queue = new PriorityQueue<State>(new StateComparator());
-		LinkedList<State> queue = new LinkedList<State>();
+		PriorityQueue<State> queue = new PriorityQueue<State>(new StateComparator());
 		Set<State> visitedStates = new HashSet<State>();
-		LinkedList<State> childStates = new LinkedList<State>();
 		Vehicle vehicle = this.vehicle;
 		City initialCity = this.initialCity;
 		TaskSet tasks = this.tasks;
@@ -68,18 +67,13 @@ public class AStar {
 			}
 			nbExploredState++;
 
-			childStates.clear();
 			for (State nextState : state.nextLegalStates()) {
 				if (!visitedStates.contains(nextState)) {
 					this.parentState.put(nextState, state);
-					childStates.add(nextState);
 					visitedStates.add(nextState);
+					queue.add(nextState);
 				}
 			}
-			//Sorting child states
-			Collections.sort(childStates, new StateComparator());
-			//Merging the child states and the queue
-			queue.addAll(childStates);
 			
 		}
 		// printing statistics

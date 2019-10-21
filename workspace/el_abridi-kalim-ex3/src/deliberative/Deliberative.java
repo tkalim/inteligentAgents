@@ -27,6 +27,7 @@ public class Deliberative implements DeliberativeBehavior {
 	/* the properties of the agent */
 	Agent agent;
 	int capacity;
+	TaskSet carryingTasks;
 
 	/* the planning class */
 	Algorithm algorithm;
@@ -100,11 +101,6 @@ public class Deliberative implements DeliberativeBehavior {
 
 	@Override
 	public void planCancelled(TaskSet carriedTasks) {
-
-		if (!carriedTasks.isEmpty()) {
-			// This cannot happen for this simple agent, but typically
-			// you will need to consider the carriedTasks when the next
-			// plan is computed.
-		}
+			//this is already handled due to the fact that in BFS and A*, the initial state is initialised using vehicle.getCurrentTasks()
 	}
 }

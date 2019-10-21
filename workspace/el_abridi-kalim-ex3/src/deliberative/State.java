@@ -138,7 +138,7 @@ public class State {
 			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.pickupCity);
 			heuristic += this.vehicle.costPerKm() * task.pickupCity.distanceTo(task.deliveryCity);
 		}
-		return heuristic;
+		return 0.0;
 	}
 
 
