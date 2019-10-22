@@ -127,8 +127,8 @@ public class State {
 				// "==" gives best result in A*, but is it correct ?
 				&& this.accumulatedCost + this.getHeuristic() >= other.accumulatedCost + other.getHeuristic();
 	}
-	
-//	
+
+//
 //	private double computeHeuristic() {
 //		double heuristic = 0.0;
 //		for (Task task: this.carryingTasks) {
@@ -140,18 +140,15 @@ public class State {
 //		}
 //		return heuristic;
 //	}
-	
+
 
 	private double computeHeuristic() {
 		Double heuristic = 0.0;
 		City currentCity = this.getCurrentCity();
-		for (Task task : this.carryingTasks) {
-			heuristic += vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
-		}
 		for (Task task : this.remainingTasks) {
-			heuristic += vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
+			heuristic = Double.max(heuristic, vehicle.costPerKm() * task.pickupCity.distanceTo(task.deliveryCity));
 		}
-		
+
 		return heuristic;
 	}
 
