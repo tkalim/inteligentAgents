@@ -54,5 +54,10 @@
 		<set class-name="deliberative.Deliberative"/>
 		<set algorithm="ASTARCONSTANT"/>
 	</agent>
+	<agent name="deliberative-main">
+		<set class-path="bin/"/>
+		<set class-name="deliberative.Deliberative"/>
+		<set algorithm="ASTAR"/>
+	</agent>
 
 </agents>

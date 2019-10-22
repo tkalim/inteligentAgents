@@ -105,15 +105,14 @@ public class BFS {
 			currentState = parentState.get(currentState);
 			actionList.add(action);
 		}
-		// change variables here
-		City oldCity = this.initialCity;
+		City tempCity = this.initialCity;
 		Plan plan = new Plan(initialCity);
 		for (int i = actionList.size() - 1;  i >= 0 ; i--) {
 			Action action = actionList.get(i);
-			for (City city : oldCity.pathTo(citiesList.get(i))) {
+			for (City city : tempCity.pathTo(citiesList.get(i))) {
 				plan.appendMove(city);
 			}
-			oldCity = citiesList.get(i);
+			tempCity = citiesList.get(i);
 			plan.append(action);
 		}
 		return plan;
