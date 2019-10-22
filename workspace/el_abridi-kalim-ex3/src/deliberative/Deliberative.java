@@ -70,7 +70,7 @@ public class Deliberative implements DeliberativeBehavior {
 
 			long elapsedTimeASTAR = System.currentTimeMillis() - startTimeASTAR;
 
-			System.out.println("elapsedTimeBFS " + elapsedTimeASTAR + " Milliseconds");
+			System.out.println("elapsedTimeAstar " + elapsedTimeASTAR + " Milliseconds");
 			System.out.println("optimal plan distance " + plan.totalDistance());
 			System.out.println("----------------------------------");
 
