@@ -20,7 +20,7 @@ import logist.topology.Topology.City;
 public class Deliberative implements DeliberativeBehavior {
 
 	enum Algorithm {
-		BFS, ASTAR, NAIVE
+		BFS, ASTAR, NAIVE, ASTARCONSTANT
 	}
 
 	/* Environment */
@@ -96,6 +96,21 @@ public class Deliberative implements DeliberativeBehavior {
 
 				System.out.println("NAIVE Algorithm");
 				System.out.println("elapsedTimeBFS " + elapsedTimeNAIVE + " Milliseconds");
+				System.out.println("tasks.size() " + tasks.size());
+				System.out.println("optimal plan distance " + plan.totalDistance());
+				System.out.println("----------------------------------");
+				break;
+
+			case ASTARCONSTANT:
+				long startTimeASTARCONSTANT = System.currentTimeMillis();
+
+				AStarConstant aStarConstant = new AStarConstant(vehicle, tasks);
+				plan = aStarConstant.search();
+
+				long elapsedTimeASTARCONSTANT = System.currentTimeMillis() - startTimeASTARCONSTANT;
+
+				System.out.println("ASTARCONSTANT Algorithm");
+				System.out.println("elapsedTimeBFS " + elapsedTimeASTARCONSTANT + " Milliseconds");
 				System.out.println("tasks.size() " + tasks.size());
 				System.out.println("optimal plan distance " + plan.totalDistance());
 				System.out.println("----------------------------------");
