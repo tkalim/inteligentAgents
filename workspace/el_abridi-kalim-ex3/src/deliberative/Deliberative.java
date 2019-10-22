@@ -58,48 +58,46 @@ public class Deliberative implements DeliberativeBehavior {
 		// Compute the plan with the selected algorithm.
 		switch (algorithm) {
 		case ASTAR:
-			long startTimeASTAR = System.nanoTime();
+			long startTimeASTAR = System.currentTimeMillis();
 
 			AStar aStar = new AStar(vehicle, tasks);
 			plan = aStar.search();
 
-			long elapsedTimeASTAR = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeASTAR, TimeUnit.NANOSECONDS);
+			long elapsedTimeASTAR = System.currentTimeMillis() - startTimeASTAR;
 
 			System.out.println("AStar Algorithm");
-			System.out.println("elapsedTimeASTAR " + elapsedTimeASTAR + " seconds");
+			System.out.println("elapsedTimeBFS " + elapsedTimeASTAR + " Milliseconds");
 			System.out.println("tasks.size() " + tasks.size());
-			System.out.println(plan.toString());
+			System.out.println("optimal plan distance " + plan.totalDistance());
 			System.out.println("----------------------------------");
 
 			break;
 		case BFS:
-			long startTimeBFS = System.nanoTime();
+			long startTimeBFS = System.currentTimeMillis();
 
-			System.out.println("Algorithm used for search: BFS");
 			BFS bfs = new BFS(vehicle, tasks);
 			plan = bfs.search();
 
-			long elapsedTimeBFS = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeBFS, TimeUnit.NANOSECONDS);
+			long elapsedTimeBFS = System.currentTimeMillis() - startTimeBFS;
 
-			System.out.println("AStar Algorithm");
-			System.out.println("elapsedTimeBFS " + elapsedTimeBFS + " seconds");
+			System.out.println("BFS Algorithm");
+			System.out.println("elapsedTimeBFS " + elapsedTimeBFS + " Milliseconds");
 			System.out.println("tasks.size() " + tasks.size());
-			System.out.println(plan.toString());
+			System.out.println("optimal plan distance " + plan.totalDistance());
 			System.out.println("----------------------------------");
 			break;
 
 			case NAIVE:
-				long startTimeNAIVE = System.nanoTime();
+				long startTimeNAIVE = System.currentTimeMillis();
 
-				System.out.println("Algorithm used for search: NAIVE");
 				plan = naivePlan(vehicle, tasks);
 
-				long elapsedTimeNAIVE = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeNAIVE, TimeUnit.NANOSECONDS);
+				long elapsedTimeNAIVE = System.currentTimeMillis() - startTimeNAIVE;
 
-				System.out.println("AStar Algorithm");
-				System.out.println("elapsedTimeNAIVE " + elapsedTimeNAIVE + " seconds");
+				System.out.println("NAIVE Algorithm");
+				System.out.println("elapsedTimeBFS " + elapsedTimeNAIVE + " Milliseconds");
 				System.out.println("tasks.size() " + tasks.size());
-				System.out.println(plan.toString());
+				System.out.println("optimal plan distance " + plan.totalDistance());
 				System.out.println("----------------------------------");
 				break;
 		default:
