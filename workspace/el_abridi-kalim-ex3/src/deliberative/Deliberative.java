@@ -54,6 +54,9 @@ public class Deliberative implements DeliberativeBehavior {
 	@Override
 	public Plan plan(Vehicle vehicle, TaskSet tasks) {
 		Plan plan;
+		
+		System.out.println("Vehicle name " + vehicle.name());
+		System.out.println("Vehicle homecity " + vehicle.homeCity());
 
 		// Compute the plan with the selected algorithm.
 		switch (algorithm) {
