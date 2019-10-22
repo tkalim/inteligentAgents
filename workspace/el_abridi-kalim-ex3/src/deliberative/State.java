@@ -24,7 +24,8 @@ public class State {
 	private double accumulatedCost;
 	private double heuristic;
 
-	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action, double accumulatedCost) {
+	public State(Vehicle vehicle, City currentCity, TaskSet remainingTasks, TaskSet carryingTasks, Action action,
+			double accumulatedCost) {
 		super();
 		this.currentCity = currentCity;
 		this.remainingTasks = remainingTasks;
@@ -61,8 +62,8 @@ public class State {
 	}
 
 	public Boolean isGoalState() {
-		return(this.carryingTasks.isEmpty() && this.remainingTasks.isEmpty());
-		}
+		return (this.carryingTasks.isEmpty() && this.remainingTasks.isEmpty());
+	}
 
 	public int getCurrentCapacity() {
 		return currentCapacity;
@@ -72,7 +73,7 @@ public class State {
 		return accumulatedCost;
 	}
 
-	public LinkedList<State> nextLegalStates(){
+	public LinkedList<State> nextLegalStates() {
 		LinkedList<State> nextlegalstates = new LinkedList<State>();
 		int costPerKm = vehicle.costPerKm();
 
@@ -84,24 +85,29 @@ public class State {
 				TaskSet carryingTasks = getCarryingTasks().clone();
 				carryingTasks.add(remainingTask);
 				Pickup pickup = new Pickup(remainingTask);
-				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(remainingTask.pickupCity);
-				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup, accumulatedCost);
+				double accumulatedCost = this.getAccumulatedCost()
+						+ costPerKm * getCurrentCity().distanceTo(remainingTask.pickupCity);
+				State nextState = new State(vehicle, remainingTask.pickupCity, remainingTasks, carryingTasks, pickup,
+						accumulatedCost);
 				nextlegalstates.add(nextState);
 			}
 		}
 
 		// adding states made of carrying task
 		for (Task carryingTask : getCarryingTasks()) {
-				TaskSet carryingTasks = getCarryingTasks().clone();
-				carryingTasks.remove(carryingTask);
-				TaskSet remainingTasks = getRemainingTasks().clone();
-				Delivery delivery = new Delivery(carryingTask);
-				double accumulatedCost = this.getAccumulatedCost() + costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
-				State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery, accumulatedCost);
-				nextlegalstates.add(nextState);
+			TaskSet carryingTasks = getCarryingTasks().clone();
+			carryingTasks.remove(carryingTask);
+			TaskSet remainingTasks = getRemainingTasks().clone();
+			Delivery delivery = new Delivery(carryingTask);
+			double accumulatedCost = this.getAccumulatedCost()
+					+ costPerKm * getCurrentCity().distanceTo(carryingTask.deliveryCity);
+			State nextState = new State(vehicle, carryingTask.deliveryCity, remainingTasks, carryingTasks, delivery,
+					accumulatedCost);
+			nextlegalstates.add(nextState);
 		}
 
-		// shuffle the results to prevent a similar implementation to the naive (1st pickup 2nd delivery)
+		// shuffle the results to prevent a similar implementation to the naive (1st
+		// pickup 2nd delivery)
 		Collections.shuffle(nextlegalstates);
 
 		return nextlegalstates;
@@ -127,31 +133,20 @@ public class State {
 				// "==" gives best result in A*, but is it correct ?
 				&& this.accumulatedCost + this.getHeuristic() >= other.accumulatedCost + other.getHeuristic();
 	}
-	
-//	
-//	private double computeHeuristic() {
-//		double heuristic = 0.0;
-//		for (Task task: this.carryingTasks) {
-//			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
-//		}
-//		for (Task task: this.remainingTasks) {
-//			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.pickupCity);
-//			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
-//		}
-//		return heuristic;
-//	}
-	
 
 	private double computeHeuristic() {
 		Double heuristic = 0.0;
+		Double temp_heuristic = 0.0;
 		City currentCity = this.getCurrentCity();
-		for (Task task : this.carryingTasks) {
-			heuristic += vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
-		}
 		for (Task task : this.remainingTasks) {
-			heuristic += vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
+			temp_heuristic = vehicle.costPerKm() * task.pickupCity.distanceTo(task.deliveryCity);
+			heuristic = Double.max(heuristic, temp_heuristic);
 		}
-		
+		for (Task task : this.carryingTasks) {
+			temp_heuristic = vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
+			heuristic = Double.max(heuristic, temp_heuristic);
+		}
+
 		return heuristic;
 	}
 
@@ -161,6 +156,5 @@ public class State {
 				+ remainingTasks + ", vehicle=" + vehicle + ", currentCapacity=" + currentCapacity + ", action="
 				+ action + ", accumulatedCost=" + accumulatedCost + ", heuristic=" + heuristic + "]";
 	}
-
 
 }
