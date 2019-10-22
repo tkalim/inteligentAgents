@@ -55,9 +55,6 @@ public class Deliberative implements DeliberativeBehavior {
 		// Compute the plan with the selected algorithm.
 		switch (algorithm) {
 		case ASTAR:
-			// ...
-			// TODO: go back to naive implementation for analysis
-			//plan = naivePlan(vehicle, tasks);
 			long startTime = System.nanoTime();
 
 			AStar aStar = new AStar(vehicle, tasks);
@@ -73,7 +70,6 @@ public class Deliberative implements DeliberativeBehavior {
 
 			break;
 		case BFS:
-			// ...
 			long startTime = System.nanoTime();
 
 			System.out.println("Algorithm used for search: BFS");
@@ -90,7 +86,6 @@ public class Deliberative implements DeliberativeBehavior {
 			break;
 
 			case NAIVE:
-				// ...
 				long startTime = System.nanoTime();
 
 				System.out.println("Algorithm used for search: NAIVE");
@@ -107,7 +102,6 @@ public class Deliberative implements DeliberativeBehavior {
 		default:
 			throw new AssertionError("Should not happen.");
 		}
-		System.out.println(plan.toString());
 		return plan;
 	}
 
