@@ -18,6 +18,7 @@ import logist.plan.Action;
 import logist.plan.Action.Delivery;
 import logist.plan.Action.Pickup;
 import logist.topology.Topology.City;
+import java.util.concurrent.TimeUnit;
 
 public class AStar {
 
@@ -41,6 +42,8 @@ public class AStar {
 	}
 
 	public Plan search() {
+		
+		long startTime = System.nanoTime();
 
 		// create the priority queue and keep track of visited states
 		//The queue is not sorted, it's the list of child states that is
@@ -63,6 +66,10 @@ public class AStar {
 			if (state.isGoalState()) {
 				nbExploredState++;
 				System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploredState));
+				long endTime = System.nanoTime();
+				long elapsedTime = endTime - startTime;
+				long convert = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+				System.out.println("A* time for " + tasks.size() + " tasks: " + convert + " seconds");
 				return getPlan(state);
 			}
 			nbExploredState++;

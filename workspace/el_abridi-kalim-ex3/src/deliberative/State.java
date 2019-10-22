@@ -125,7 +125,7 @@ public class State {
 				&& Objects.equals(currentCity, other.currentCity)
 				&& Objects.equals(remainingTasks, other.remainingTasks)
 				// "==" gives best result in A*, but is it correct ?
-				&& this.accumulatedCost == other.accumulatedCost;
+				&& this.accumulatedCost + this.getHeuristic() >= other.accumulatedCost + other.getHeuristic();
 	}
 	
 	
@@ -136,7 +136,7 @@ public class State {
 		}
 		for (Task task: this.remainingTasks) {
 			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.pickupCity);
-			heuristic += this.vehicle.costPerKm() * task.pickupCity.distanceTo(task.deliveryCity);
+			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
 		}
 		return heuristic;
 	}

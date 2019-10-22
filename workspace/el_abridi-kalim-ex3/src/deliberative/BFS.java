@@ -7,6 +7,7 @@ import logist.plan.Plan;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +38,8 @@ public class BFS {
 	}
 
 	public Plan search() {
+		
+		long startTime = System.nanoTime();
 
 		// create the queue and keep track of visited states
 		Queue<State> queue = new LinkedList<State>();
@@ -86,6 +89,10 @@ public class BFS {
 			throw new AssertionError("No goal state found !");
 		}
 		else {
+			long endTime = System.nanoTime();
+			long elapsedTime = endTime - startTime;
+			long convert = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+			System.out.println("BFS time for " + tasks.size() + " tasks: " + convert + " seconds");
 			return getPlan(minCostState);
 		}
 
