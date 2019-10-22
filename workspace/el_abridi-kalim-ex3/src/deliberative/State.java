@@ -128,19 +128,32 @@ public class State {
 				&& this.accumulatedCost + this.getHeuristic() >= other.accumulatedCost + other.getHeuristic();
 	}
 	
+//	
+//	private double computeHeuristic() {
+//		double heuristic = 0.0;
+//		for (Task task: this.carryingTasks) {
+//			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
+//		}
+//		for (Task task: this.remainingTasks) {
+//			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.pickupCity);
+//			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
+//		}
+//		return heuristic;
+//	}
 	
+
 	private double computeHeuristic() {
-		double heuristic = 0.0;
-		for (Task task: this.carryingTasks) {
-			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
+		Double heuristic = 0.0;
+		City currentCity = this.getCurrentCity();
+		for (Task task : this.carryingTasks) {
+			heuristic += vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
 		}
-		for (Task task: this.remainingTasks) {
-			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.pickupCity);
-			heuristic += this.vehicle.costPerKm() * this.getCurrentCity().distanceTo(task.deliveryCity);
+		for (Task task : this.remainingTasks) {
+			heuristic += vehicle.costPerKm() * currentCity.distanceTo(task.deliveryCity);
 		}
+		
 		return heuristic;
 	}
-
 
 
 }
