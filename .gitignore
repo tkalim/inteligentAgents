@@ -28,3 +28,4 @@ local.properties
 *.launch
 
 workspace/el_abridi-kalim-ex3/history.xml
+*.log
