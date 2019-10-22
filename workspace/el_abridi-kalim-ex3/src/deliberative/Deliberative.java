@@ -1,6 +1,9 @@
 package deliberative;
 /* import table */
 import logist.simulation.Vehicle;
+
+import java.util.concurrent.TimeUnit;
+
 import logist.agent.Agent;
 import logist.behavior.DeliberativeBehavior;
 import logist.plan.Plan;
@@ -17,7 +20,7 @@ import logist.topology.Topology.City;
 public class Deliberative implements DeliberativeBehavior {
 
 	enum Algorithm {
-		BFS, ASTAR
+		BFS, ASTAR, NAIVE
 	}
 
 	/* Environment */
@@ -55,47 +58,47 @@ public class Deliberative implements DeliberativeBehavior {
 		// Compute the plan with the selected algorithm.
 		switch (algorithm) {
 		case ASTAR:
-			long startTime = System.nanoTime();
+			long startTimeASTAR = System.nanoTime();
 
 			AStar aStar = new AStar(vehicle, tasks);
 			plan = aStar.search();
 
-			long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+			long elapsedTimeASTAR = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeASTAR, TimeUnit.NANOSECONDS);
 
 			System.out.println("AStar Algorithm");
-			System.out.println("elapsedTime " + elapsedTime + " seconds");
-			System.out.println("task.size() " + task.size());
+			System.out.println("elapsedTimeASTAR " + elapsedTimeASTAR + " seconds");
+			System.out.println("tasks.size() " + tasks.size());
 			System.out.println(plan.toString());
 			System.out.println("----------------------------------");
 
 			break;
 		case BFS:
-			long startTime = System.nanoTime();
+			long startTimeBFS = System.nanoTime();
 
 			System.out.println("Algorithm used for search: BFS");
 			BFS bfs = new BFS(vehicle, tasks);
 			plan = bfs.search();
 
-			long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+			long elapsedTimeBFS = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeBFS, TimeUnit.NANOSECONDS);
 
 			System.out.println("AStar Algorithm");
-			System.out.println("elapsedTime " + elapsedTime + " seconds");
-			System.out.println("task.size() " + task.size());
+			System.out.println("elapsedTimeBFS " + elapsedTimeBFS + " seconds");
+			System.out.println("tasks.size() " + tasks.size());
 			System.out.println(plan.toString());
 			System.out.println("----------------------------------");
 			break;
 
 			case NAIVE:
-				long startTime = System.nanoTime();
+				long startTimeNAIVE = System.nanoTime();
 
 				System.out.println("Algorithm used for search: NAIVE");
 				plan = naivePlan(vehicle, tasks);
 
-				long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+				long elapsedTimeNAIVE = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeNAIVE, TimeUnit.NANOSECONDS);
 
 				System.out.println("AStar Algorithm");
-				System.out.println("elapsedTime " + elapsedTime + " seconds");
-				System.out.println("task.size() " + task.size());
+				System.out.println("elapsedTimeNAIVE " + elapsedTimeNAIVE + " seconds");
+				System.out.println("tasks.size() " + tasks.size());
 				System.out.println(plan.toString());
 				System.out.println("----------------------------------");
 				break;
