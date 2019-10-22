@@ -42,9 +42,6 @@ public class AStar {
 	}
 
 	public Plan search() {
-		
-		long startTime = System.nanoTime();
-
 		// create the priority queue and keep track of visited states
 		//The queue is not sorted, it's the list of child states that is
 		//PriorityQueue<State> queue = new PriorityQueue<State>(new StateComparator());
@@ -66,10 +63,6 @@ public class AStar {
 			if (state.isGoalState()) {
 				nbExploredState++;
 				System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploredState));
-				long endTime = System.nanoTime();
-				long elapsedTime = endTime - startTime;
-				long convert = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
-				System.out.println("A* time for " + tasks.size() + " tasks: " + convert + " seconds");
 				return getPlan(state);
 			}
 			nbExploredState++;
@@ -81,7 +74,7 @@ public class AStar {
 					queue.add(nextState);
 				}
 			}
-			
+
 		}
 		// printing statistics
 
