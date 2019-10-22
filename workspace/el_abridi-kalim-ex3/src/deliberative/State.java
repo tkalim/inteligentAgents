@@ -141,6 +141,13 @@ public class State {
 		return heuristic;
 	}
 
+	@Override
+	public String toString() {
+		return "State [currentCity=" + currentCity + ", carryingTasks=" + carryingTasks + ", remainingTasks="
+				+ remainingTasks + ", vehicle=" + vehicle + ", currentCapacity=" + currentCapacity + ", action="
+				+ action + ", accumulatedCost=" + accumulatedCost + ", heuristic=" + heuristic + "]";
+	}
+
 
 
 }
