@@ -101,6 +101,7 @@ public class Deliberative implements DeliberativeBehavior {
 
 	@Override
 	public void planCancelled(TaskSet carriedTasks) {
-			//this is already handled due to the fact that in BFS and A*, the initial state is initialised using vehicle.getCurrentTasks()
+			//this is already handled due to the fact that in BFS and A*,
+			//the initial state is initialised using vehicle.getCurrentTasks()
 	}
 }
