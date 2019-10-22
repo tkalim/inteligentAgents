@@ -54,13 +54,15 @@ public class Deliberative implements DeliberativeBehavior {
 	@Override
 	public Plan plan(Vehicle vehicle, TaskSet tasks) {
 		Plan plan;
-		
-		System.out.println("Vehicle name " + vehicle.name());
-		System.out.println("Vehicle homecity " + vehicle.homeCity());
 
 		// Compute the plan with the selected algorithm.
 		switch (algorithm) {
 		case ASTAR:
+			System.out.println("--------------START-----------------");
+			System.out.println("AStar Algorithm");
+			System.out.println("tasks.size() " + tasks.size());
+			System.out.println("Vehicle name " + vehicle.name());
+			System.out.println("Vehicle homecity " + vehicle.homeCity());
 			long startTimeASTAR = System.currentTimeMillis();
 
 			AStar aStar = new AStar(vehicle, tasks);
@@ -68,14 +70,17 @@ public class Deliberative implements DeliberativeBehavior {
 
 			long elapsedTimeASTAR = System.currentTimeMillis() - startTimeASTAR;
 
-			System.out.println("AStar Algorithm");
 			System.out.println("elapsedTimeBFS " + elapsedTimeASTAR + " Milliseconds");
-			System.out.println("tasks.size() " + tasks.size());
 			System.out.println("optimal plan distance " + plan.totalDistance());
 			System.out.println("----------------------------------");
 
 			break;
 		case BFS:
+			System.out.println("--------------START-----------------");
+			System.out.println("BFS Algorithm");
+			System.out.println("tasks.size() " + tasks.size());
+			System.out.println("Vehicle name " + vehicle.name());
+			System.out.println("Vehicle homecity " + vehicle.homeCity());
 			long startTimeBFS = System.currentTimeMillis();
 
 			BFS bfs = new BFS(vehicle, tasks);
@@ -83,28 +88,34 @@ public class Deliberative implements DeliberativeBehavior {
 
 			long elapsedTimeBFS = System.currentTimeMillis() - startTimeBFS;
 
-			System.out.println("BFS Algorithm");
 			System.out.println("elapsedTimeBFS " + elapsedTimeBFS + " Milliseconds");
-			System.out.println("tasks.size() " + tasks.size());
 			System.out.println("optimal plan distance " + plan.totalDistance());
 			System.out.println("----------------------------------");
 			break;
 
 			case NAIVE:
+				System.out.println("--------------START-----------------");
+				System.out.println("NAIVE Algorithm");
+				System.out.println("tasks.size() " + tasks.size());
+				System.out.println("Vehicle name " + vehicle.name());
+				System.out.println("Vehicle homecity " + vehicle.homeCity());
 				long startTimeNAIVE = System.currentTimeMillis();
 
 				plan = naivePlan(vehicle, tasks);
 
 				long elapsedTimeNAIVE = System.currentTimeMillis() - startTimeNAIVE;
 
-				System.out.println("NAIVE Algorithm");
 				System.out.println("elapsedTimeBFS " + elapsedTimeNAIVE + " Milliseconds");
-				System.out.println("tasks.size() " + tasks.size());
 				System.out.println("optimal plan distance " + plan.totalDistance());
 				System.out.println("----------------------------------");
 				break;
 
 			case ASTARCONSTANT:
+				System.out.println("--------------START-----------------");
+				System.out.println("ASTARCONSTANT Algorithm");
+				System.out.println("tasks.size() " + tasks.size());
+				System.out.println("Vehicle name " + vehicle.name());
+				System.out.println("Vehicle homecity " + vehicle.homeCity());
 				long startTimeASTARCONSTANT = System.currentTimeMillis();
 
 				AStarConstant aStarConstant = new AStarConstant(vehicle, tasks);
@@ -112,9 +123,7 @@ public class Deliberative implements DeliberativeBehavior {
 
 				long elapsedTimeASTARCONSTANT = System.currentTimeMillis() - startTimeASTARCONSTANT;
 
-				System.out.println("ASTARCONSTANT Algorithm");
 				System.out.println("elapsedTimeBFS " + elapsedTimeASTARCONSTANT + " Milliseconds");
-				System.out.println("tasks.size() " + tasks.size());
 				System.out.println("optimal plan distance " + plan.totalDistance());
 				System.out.println("----------------------------------");
 				break;

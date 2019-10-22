@@ -38,7 +38,7 @@ public class BFS {
 	}
 
 	public Plan search() {
-		
+
 		long startTime = System.nanoTime();
 
 		// create the queue and keep track of visited states
@@ -59,7 +59,7 @@ public class BFS {
 
 		while (queue.size() != 0) {
 			State state = queue.poll();
-			
+
 			if(state.isGoalState()) {
 				nbExploredGoalState++;
 			}
@@ -80,19 +80,15 @@ public class BFS {
 				}
 			}
 		}
-		
+
 		// printing statistics
 		System.out.println("nbExploreGoalStateBeforeFindingOptimal = " + String.valueOf(nbExploreGoalStateBeforeFindingOptimal));
 		System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploreStateBeforeFindingOptimal));
-		
+
 		if (minCostState == null) {
 			throw new AssertionError("No goal state found !");
 		}
 		else {
-			long endTime = System.nanoTime();
-			long elapsedTime = endTime - startTime;
-			long convert = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
-			System.out.println("BFS time for " + tasks.size() + " tasks: " + convert + " seconds");
 			return getPlan(minCostState);
 		}
 
