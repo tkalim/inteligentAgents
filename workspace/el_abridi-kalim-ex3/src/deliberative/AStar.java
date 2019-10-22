@@ -68,7 +68,8 @@ public class AStar {
 				System.out.println("nbExploreStateBeforeFindingOptimal = " + String.valueOf(nbExploredState));
 				long endTime = System.nanoTime();
 				long elapsedTime = endTime - startTime;
-				long convert = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+//				long convert = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+				double convert = elapsedTime / 1000000000.0;
 				System.out.println("A* time for " + tasks.size() + " tasks: " + convert + " seconds");
 				return getPlan(state);
 			}
