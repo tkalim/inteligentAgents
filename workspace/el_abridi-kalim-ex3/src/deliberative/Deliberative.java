@@ -88,6 +88,22 @@ public class Deliberative implements DeliberativeBehavior {
 			System.out.println(plan.toString());
 			System.out.println("----------------------------------");
 			break;
+
+			case NAIVE:
+				// ...
+				long startTime = System.nanoTime();
+
+				System.out.println("Algorithm used for search: NAIVE");
+				plan = naivePlan(vehicle, tasks);
+
+				long elapsedTime = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+
+				System.out.println("AStar Algorithm");
+				System.out.println("elapsedTime " + elapsedTime + " seconds");
+				System.out.println("task.size() " + task.size());
+				System.out.println(plan.toString());
+				System.out.println("----------------------------------");
+				break;
 		default:
 			throw new AssertionError("Should not happen.");
 		}
