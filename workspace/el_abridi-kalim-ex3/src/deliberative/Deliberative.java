@@ -1,6 +1,9 @@
 package deliberative;
 /* import table */
 import logist.simulation.Vehicle;
+
+import java.util.concurrent.TimeUnit;
+
 import logist.agent.Agent;
 import logist.behavior.DeliberativeBehavior;
 import logist.plan.Plan;
@@ -17,7 +20,7 @@ import logist.topology.Topology.City;
 public class Deliberative implements DeliberativeBehavior {
 
 	enum Algorithm {
-		BFS, ASTAR
+		BFS, ASTAR, NAIVE
 	}
 
 	/* Environment */
@@ -55,24 +58,53 @@ public class Deliberative implements DeliberativeBehavior {
 		// Compute the plan with the selected algorithm.
 		switch (algorithm) {
 		case ASTAR:
-			// ...
-			// TODO: go back to naive implementation for analysis
-			//plan = naivePlan(vehicle, tasks);
-			System.out.println("Algorithm used for search: ASTAR");
+			long startTimeASTAR = System.nanoTime();
+
 			AStar aStar = new AStar(vehicle, tasks);
 			plan = aStar.search();
+
+			long elapsedTimeASTAR = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeASTAR, TimeUnit.NANOSECONDS);
+
+			System.out.println("AStar Algorithm");
+			System.out.println("elapsedTimeASTAR " + elapsedTimeASTAR + " seconds");
+			System.out.println("tasks.size() " + tasks.size());
 			System.out.println(plan.toString());
+			System.out.println("----------------------------------");
+
 			break;
 		case BFS:
-			// ...
+			long startTimeBFS = System.nanoTime();
+
 			System.out.println("Algorithm used for search: BFS");
 			BFS bfs = new BFS(vehicle, tasks);
 			plan = bfs.search();
+
+			long elapsedTimeBFS = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeBFS, TimeUnit.NANOSECONDS);
+
+			System.out.println("AStar Algorithm");
+			System.out.println("elapsedTimeBFS " + elapsedTimeBFS + " seconds");
+			System.out.println("tasks.size() " + tasks.size());
+			System.out.println(plan.toString());
+			System.out.println("----------------------------------");
 			break;
+
+			case NAIVE:
+				long startTimeNAIVE = System.nanoTime();
+
+				System.out.println("Algorithm used for search: NAIVE");
+				plan = naivePlan(vehicle, tasks);
+
+				long elapsedTimeNAIVE = TimeUnit.SECONDS.convert(System.nanoTime() - startTimeNAIVE, TimeUnit.NANOSECONDS);
+
+				System.out.println("AStar Algorithm");
+				System.out.println("elapsedTimeNAIVE " + elapsedTimeNAIVE + " seconds");
+				System.out.println("tasks.size() " + tasks.size());
+				System.out.println(plan.toString());
+				System.out.println("----------------------------------");
+				break;
 		default:
 			throw new AssertionError("Should not happen.");
 		}
-		System.out.println(plan.toString());
 		return plan;
 	}
 
@@ -101,6 +133,7 @@ public class Deliberative implements DeliberativeBehavior {
 
 	@Override
 	public void planCancelled(TaskSet carriedTasks) {
-			//this is already handled due to the fact that in BFS and A*, the initial state is initialised using vehicle.getCurrentTasks()
+			//this is already handled due to the fact that in BFS and A*,
+			//the initial state is initialised using vehicle.getCurrentTasks()
 	}
 }
