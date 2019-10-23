@@ -2,11 +2,19 @@
 
 <agents>
 	<!-- A list of agents and their behavior classes -->
-	
+
 	<!-- #### CENTRALIZED AGENTS ### -->
+	<!-- java -jar ../logist/logist.jar config/centralized.xml centralized-random -->
 	<agent name="centralized-random">
 		<set class-path="bin/"/>
-		<set class-name="template.CentralizedTemplate"/>
+		<set class-name="centralized.Centralized"/>
+		<set algorithm="NAIVE"/>
 	</agent>
-	
+
+	<agent name="centralized-sls">
+		<set class-path="bin/"/>
+		<set class-name="centralized.Centralized"/>
+		<set algorithm="SLS"/>
+	</agent>
+
 </agents>
