@@ -1,5 +1,8 @@
 package centralized;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
@@ -11,6 +14,8 @@ import logist.agent.Agent;
 import logist.config.Parsers;
 import logist.simulation.Vehicle;
 import logist.plan.Action;
+import logist.plan.Action.Delivery;
+import logist.plan.Action.Pickup;
 import logist.plan.Plan;
 import logist.task.Task;
 import logist.task.TaskDistribution;
@@ -20,124 +25,113 @@ import logist.topology.Topology.City;
 
 public class VehiclePlan {
 
-	private Vehicle vehicle;
-	private LinkedList<Action> actions;
-	private HashMap<Action, Integer> pickUpDeliveryPos;
+	public Vehicle vehicle;
+	// the actions are reverse to add in "front" in O(1)
+	public ArrayList<TaskTypeTuple> nextTask;
+	public Plan plan;
 
-	public VehiclePlan(Vehicle vehicle, LinkedList<Action>  actions) {
+	public VehiclePlan(Vehicle vehicle) {
 		this.vehicle = vehicle;
-		this.actions = new LinkedList<Action>();
-		this.pickUpDeliveryPos = new HashMap<Action, Integer>();
+		this.nextTask = new ArrayList<TaskTypeTuple>();
+		this.plan = null;
 	}
 
-	void changingVehicle(VehiclePlan v1, VehiclePlan v2) {
-		// transfer first task of v1 to v2
-		// difficulty here compared to handout pdp as csp is deciding
-		// how to put the task in v2 as a task is pickup + delivery
-		// and we don't know when to schedule delivery in the second Vehicle
-		// given that there are other tasks load as well contrary to the handout!
-		// we will choose a position at random in the action sequence after the pickup
-		// position
-		// the compilation inheritely comes from the fact that a pickup is not followed directly by its pickUp
-		// it may happen that the optimal path is pickUpT1, PickUpT2, DeliverT2, DeliverT1. Therefore, the timing
-		// structure is more complex when a vehicle can hold different tasks at the same time.
-		Action tPickUp = v1.getFirstAction();
-		Action tDelivery = v1.getFirstAction();
+	// should be careful and should clone the vehicle before doing the modifications
+	// should be careful if v1 does not have any task
+	public static void changingVehicle(VehiclePlan v1, VehiclePlan v2) {
 
-		// remove that action from v1 (pickup + delivery)
-		v1.removeFirstAction();
-		v2.addFirstAction(tPickUp);
-		v2.addFirstActionDeliveryAtRand(tDelivery);
+		// fetch the first task from v1 (pickup + its delivery)
+		TaskTypeTuple tPickUp = v1.removeFirstPickUpAction();
+		TaskTypeTuple tDelivery = v1.removeDeliveryOfFirstPickUpAction(tPickUp);
+
+		// adding the first task of v1 to v2
+		v2.nextTask.add(tDelivery);
+		v2.nextTask.add(tPickUp);
 	}
 
+	public boolean changingTaskOrder(int idx1, int idx2){
+		// possible violations:
+		// a pickup changed to a future position in which delivery happened before
+		// a delivery changed to a past position in which pick is happening after
+		// weight
+		Collections.swap(nextTask, idx1, idx2);
 
-	public void addFirstAction(Action tPickUp){
-		this.actions.add(0, tPickUp);
+		return checkTimelineConstraint() && checkMaxCapacityContraint();
+	}
+
+	public boolean checkMaxCapacityContraint(){
+		int accumulated_capacity = 0;
+		for(TaskTypeTuple t: nextTask) {
+			if(t.type.equals("Delivery")){
+				accumulated_capacity = accumulated_capacity - t.task.weight;
+			} else if(t.type.equals("PickUp")){
+				accumulated_capacity = accumulated_capacity + t.task.weight;
+			}
+
+			if(accumulated_capacity > vehicle.capacity()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean checkTimelineConstraint() {
+		HashSet<Integer> s = new HashSet<Integer>();
+		for(TaskTypeTuple t: nextTask) {
+			if(t.type.equals("PickUp")){
+				s.add(t.task.id);
+			} else if(t.type.equals("Delivery") && !s.contains(t.task.id)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+
+	public TaskTypeTuple removeFirstPickUpAction() {
+		return nextTask.remove(0);
+	}
+
+	public TaskTypeTuple removeDeliveryOfFirstPickUpAction(TaskTypeTuple tPickUp) {
+		TaskTypeTuple tDelivery = tPickUp.getReverseTask();
+		nextTask.remove(tPickUp.getReverseTask());
+		return tDelivery;
 	}
 
 	public Plan getPlan(){
-		return new Plan(this.vehicle.homeCity(), actions);
+		if(this.plan != null)
+			return this.plan;
+
+		City startingCity = this.vehicle.homeCity();
+		Plan plan = new Plan(startingCity);
+		for(int i = 0; i <= nextTask.size(); i--) {
+			City taskCity = null;
+			if(nextTask.get(i).type.equals("PickUp")){
+				taskCity = nextTask.get(i).task.pickupCity;
+				for(City c: startingCity.pathTo(taskCity)){
+					plan.appendMove(c);
+				}
+				plan.appendPickup(nextTask.get(i).task);
+				startingCity = nextTask.get(i).task.pickupCity;
+			} else if(nextTask.get(i).type.equals("Delivery")){
+				taskCity = nextTask.get(i).task.deliveryCity;
+				for(City c: startingCity.pathTo(taskCity)){
+					plan.appendMove(c);
+				}
+				plan.appendDelivery(nextTask.get(i).task);
+				startingCity = nextTask.get(i).task.deliveryCity;
+			}
+		}
+		return plan;
 	}
+
+
+
 
 	public double getCost(){
 		Plan plan = getPlan();
 		return plan.totalDistance() * vehicle.costPerKm();
 	}
-
-	public void addFirstActionDeliveryAtRand(Action tDelivery){
-		// insert the delivery of the pickUp at random position in the future.
-		// since we cannot translate the position of delivery from v1 to v2
-		// since they had different timelines and different tasks at hand.
-		int min = 1;
-		int max = this.actions.size();
-		// give a random number between [min, max]
-		Random rand = new Random();
-		int index = rand.nextInt((max - min) + 1) + min;
-		this.actions.add(index, tDelivery);
-	}
-
-	public Vehicle getVehicle() {
-		return vehicle;
-	}
-	public LinkedList<Action> getActions() {
-		return actions;
-	}
-	public Action getAction(int index) {
-		return actions.get(index);
-	}
-	public Action getFirstAction(){
-		// first action is always a pick-up
-		return this.getAction(0);
-	}
-	public void setActions(LinkedList<Action> actions) {
-		this.actions = actions;
-	}
-	public void setAction(int index, Action action) {
-		this.actions.set(index, action);
-	}
-	public void setFirstAction(Action action){
-		this.actions.set(0, action);
-	}
-	public Action getDelivery(Action pickUp){
-		return actions.get(pickUpDeliveryPos.get(pickUp));
-	}
-	public void removeFirstAction(){
-		// the remove action is always a pickup
-		// in this function we will remove the pickup and its corresponding delivery
-
-		// remove the delivery
-		this.actions.remove(pickUpDeliveryPos.get(getFirstAction()));
-		// remove the correspondance from the HashMap
-		this.pickUpDeliveryPos.remove(getFirstAction());
-		// remove the pickup
-		this.actions.remove();
-	}
-
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(vehicle.name());
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		// we do not need to check the plan equality since every vehicle
-		// has a unique plan
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		VehiclePlan other = (VehiclePlan) obj;
-		if (vehicle == null) {
-			if (other.vehicle != null)
-				return false;
-		} else if (!vehicle.name().equals(other.vehicle.name()))
-			return false;
-		return true;
-	}
-
 
 
 }
