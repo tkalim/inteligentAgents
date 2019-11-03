@@ -1,7 +1,32 @@
 package centralized;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import logist.simulation.Vehicle;
 
 public class Solution {
 	public ArrayList<VehiclePlan> solution;
+
+	public Solution(List<Vehicle> vehicles){
+		solution = new ArrayList<VehiclePlan>();
+		for(Vehicle v: vehicles){
+			solution.add(new VehiclePlan(v));
+		}
+	}
+	
+	// copy constructor 
+	Solution(Solution s) { 
+		solution = new ArrayList<VehiclePlan>(s.solution);
+    }
+	
+	public double getCost() {
+		double accumulatedCost = 0.0;
+		for(VehiclePlan p: solution) {
+			accumulatedCost += p.getCost();
+		}
+		return accumulatedCost;
+	}
+
+
 }
