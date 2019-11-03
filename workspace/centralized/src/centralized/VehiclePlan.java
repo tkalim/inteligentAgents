@@ -48,8 +48,8 @@ public class VehiclePlan {
 		TaskTypeTuple tDelivery = newA.solution.get(v1Idx).removeDeliveryOfFirstPickUpAction(tPickUp);
 
 		// adding the first task of v1 to v2
-		newA.solution.get(v2Idx).nextTask.add(tDelivery);
 		newA.solution.get(v2Idx).nextTask.add(tPickUp);
+		newA.solution.get(v2Idx).nextTask.add(tDelivery);
 		
 		// check constraint and return newA if all fine
 		return newA.solution.get(v2Idx).checkMaxCapacityContraint() == false? null: newA;
