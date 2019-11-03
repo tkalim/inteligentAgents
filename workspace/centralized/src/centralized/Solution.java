@@ -40,5 +40,16 @@ public class Solution {
 		}
 		return plans;
 	}
+	
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append("Total Cost: " + Double.toString(this.getCost()) + "\n");
+        str.append("Plans\n");
+        for(VehiclePlan vp: this.solution) {
+        	str.append("Vehicle " + vp.vehicle.id() + "\n");
+        	str.append(vp.getPlan() + "\n");
+        }
+        return str.toString();
+	}
 
 }
