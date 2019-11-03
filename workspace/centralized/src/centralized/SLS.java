@@ -43,9 +43,10 @@ public class SLS {
     }
 
     private List<Plan> slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
-        Solution A = selectInitialSolution(vehicles, tasks);
-
-        int max_iter = 100000;
+        //Solution A = selectInitialSolutionLargestVehicle(vehicles, tasks);
+        Solution A = selectInitialSolutionRandomVehicle(vehicles, tasks);
+        
+        int max_iter = 1000000;
         int iter = 0;
         
         // put the time and # of iterations
@@ -74,7 +75,7 @@ public class SLS {
     	return System.currentTimeMillis() - time_start >= 0.99*timeout;
     }
     
-    private Solution selectInitialSolution(List<Vehicle> vehicles, TaskSet tasks){
+    private Solution selectInitialSolutionLargestVehicle(List<Vehicle> vehicles, TaskSet tasks){
     // construct a solution with the largest vehicle carrying all the tasks in P1,D1,P2,D2...Pn,Dn fashion
       Solution A = new Solution(vehicles);
 
@@ -84,6 +85,29 @@ public class SLS {
       for(Task t : tasks) {
     	  A.solution.get(largestVehicleIdx).nextTask.add(new TaskTypeTuple(t, "PickUp"));
     	  A.solution.get(largestVehicleIdx).nextTask.add(new TaskTypeTuple(t, "Delivery"));
+      }
+
+      return A;
+    }
+    
+    private Solution selectInitialSolutionRandomVehicle(List<Vehicle> vehicles, TaskSet tasks){
+    // construct a solution with the largest vehicle carrying all the tasks in P1,D1,P2,D2...Pn,Dn fashion
+      Solution A = new Solution(vehicles);
+
+
+      for(Task t : tasks) {
+    	  Random r = new Random();
+    	  int randomVehicleIdx;
+    	  // find a random vehicle that is able to carry the task
+    	  while(true) {
+    		  randomVehicleIdx = r.nextInt(vehicles.size());
+    		  // add it only if the vehicle is able to carry it
+    		  if(A.solution.get(randomVehicleIdx).getCurrentLoad() - A.solution.get(randomVehicleIdx).vehicle.capacity() >= t.weight) {
+    			  break;
+    		  }
+    	  }
+    	  A.solution.get(randomVehicleIdx).nextTask.add(new TaskTypeTuple(t, "PickUp"));
+    	  A.solution.get(randomVehicleIdx).nextTask.add(new TaskTypeTuple(t, "Delivery"));
       }
 
       return A;
