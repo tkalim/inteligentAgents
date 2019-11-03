@@ -55,14 +55,15 @@ public class VehiclePlan {
 		return newA.solution.get(v2Idx).checkMaxCapacityContraint() == false? null: newA;
 	}
 
-	public boolean changingTaskOrder(int idx1, int idx2){
+	public Solution changingTaskOrder(Solution A, int vIdx, int idx1, int idx2){
 		// possible violations:
 		// a pickup changed to a future position in which delivery happened before
 		// a delivery changed to a past position in which pick is happening after
 		// weight
-		Collections.swap(nextTask, idx1, idx2);
+		Solution newA = new Solution(A);
+		Collections.swap(newA.solution.get(vIdx).nextTask, idx1, idx2);
 
-		return checkTimelineConstraint() && checkMaxCapacityContraint();
+		return checkTimelineConstraint() && checkMaxCapacityContraint() ? newA : null;
 	}
 
 	public boolean checkMaxCapacityContraint(){
