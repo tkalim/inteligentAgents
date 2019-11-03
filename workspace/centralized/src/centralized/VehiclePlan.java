@@ -55,7 +55,7 @@ public class VehiclePlan {
 		return newA.solution.get(v2Idx).checkMaxCapacityContraint() == false? null: newA;
 	}
 
-	public Solution changingTaskOrder(Solution A, int vIdx, int idx1, int idx2){
+	public static Solution changingTaskOrder(Solution A, int vIdx, int idx1, int idx2){
 		// possible violations:
 		// a pickup changed to a future position in which delivery happened before
 		// a delivery changed to a past position in which pick is happening after
@@ -63,7 +63,9 @@ public class VehiclePlan {
 		Solution newA = new Solution(A);
 		Collections.swap(newA.solution.get(vIdx).nextTask, idx1, idx2);
 
-		return checkTimelineConstraint() && checkMaxCapacityContraint() ? newA : null;
+		return newA.solution.get(vIdx).checkTimelineConstraint() 
+				&& newA.solution.get(vIdx).checkMaxCapacityContraint() ? 
+				newA : null;
 	}
 
 	public boolean checkMaxCapacityContraint(){
