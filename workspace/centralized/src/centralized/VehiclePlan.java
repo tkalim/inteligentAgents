@@ -113,7 +113,7 @@ public class VehiclePlan {
 
 		City startingCity = this.vehicle.homeCity();
 		Plan plan = new Plan(startingCity);
-		for(int i = 0; i <= nextTask.size(); i--) {
+		for(int i = 0; i < nextTask.size(); i++) {
 			City taskCity = null;
 			if(nextTask.get(i).type.equals("PickUp")){
 				taskCity = nextTask.get(i).task.pickupCity;
