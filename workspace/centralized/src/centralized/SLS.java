@@ -21,23 +21,19 @@ import logist.topology.Topology.City;
 public class SLS {
     private List<Vehicle> vehicles;
     private TaskSet tasks;
+    long timeout;
+    long time_start;
 
-    public SLS(List<Vehicle> vehicles, TaskSet tasks){
+    public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
       this.vehicles = vehicles;
       this.tasks = tasks;
+      this.timeout = timeout;
     }
 
     public List<Plan> plan() {
-        long time_start = System.currentTimeMillis();
+        time_start = System.currentTimeMillis();
 
-//		System.out.println("Agent " + agent.id() + " has tasks " + tasks);
-        Plan planVehicle1 = slsAlgorithm(vehicles, tasks);
-
-        List<Plan> plans = new ArrayList<Plan>();
-        plans.add(planVehicle1);
-        while (plans.size() < vehicles.size()) {
-            plans.add(Plan.EMPTY);
-        }
+        List<Plan> plans = slsAlgorithm(vehicles, tasks);
 
         long time_end = System.currentTimeMillis();
         long duration = time_end - time_start;
@@ -46,24 +42,32 @@ public class SLS {
         return plans;
     }
 
-    private Plan slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
+    private List<Plan> slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
         Solution A = selectInitialSolution(vehicles, tasks);
 
-        Solution bestSolution = new Solution(A);
+        int max_iter = 200000;
+        int iter = 0;
+        
         // put the time and # of iterations
-        while(){
+        while(max_iter > iter && !isTimeout()){
           Solution oldA = new Solution(A);
 
           ArrayList<Solution> N = chooseNeighbours(oldA);
 
           A = localChoice(N, oldA);
+          
+          iter += 1;
         }
 
-        return plan;
+        return A.getPlans();
     }
-
+    
+    private boolean isTimeout() {
+    	return System.currentTimeMillis() - time_start > timeout;
+    }
+    
     private Solution selectInitialSolution(List<Vehicle> vehicles, TaskSet tasks){
-    // construct a solution with the largest vehicle carrying all the tasks in P1,D1,P2,D2...Pn,Dn fashinon
+    // construct a solution with the largest vehicle carrying all the tasks in P1,D1,P2,D2...Pn,Dn fashion
       Solution A = new Solution(vehicles);
 
       int largestVehicleIdx = largestVehicleIndex(vehicles);
@@ -124,10 +128,30 @@ public class SLS {
 	    return oldA;
 	}
 	
-	public Vehicle 
-
-//	public ArrayList<Solution> chooseNeighbours(Solution oldA){
-//		oldA.solution.get(index)
-//	}
+	public ArrayList<Solution> chooseNeighbours(Solution A){
+		ArrayList<Solution> N = new ArrayList<Solution>();
+		int randomVehicleIdx = randomVehicleIndex(A);
+		
+		// Applying the changing vehicle operator
+		for(int i = 0 ; i < A.solution.size(); i++) {
+			if(randomVehicleIdx != i) {
+				Solution newA = VehiclePlan.changingVehicle(A, randomVehicleIdx, i);
+				if(newA != null)
+					N.add(newA);		
+			}
+		}
+		
+		if(A.solution.get(randomVehicleIdx).nextTask.size() >= 2) {
+			for(int i = 0 ; i < A.solution.get(randomVehicleIdx).nextTask.size() - 1; i++) {
+				for(int j = i + 1; j < A.solution.get(randomVehicleIdx).nextTask.size(); j++) {
+					Solution newA = VehiclePlan.changingTaskOrder(A, randomVehicleIdx, i, j);
+					if(newA != null)
+						N.add(newA);	
+				}
+			}
+		}
+		
+		return N;
+	}
 
 }
