@@ -94,6 +94,18 @@ public class VehiclePlan {
 		return true;
 	}
 	
+	public int getCurrentLoad(){
+		int load = 0;
+		for(TaskTypeTuple t: nextTask) {
+			if(t.type.equals("Delivery")){
+				load = load - t.task.weight;
+			} else if(t.type.equals("PickUp")){
+				load = load + t.task.weight;
+			}
+		}
+		return load;
+	}
+	
 	public boolean checkTimelineConstraint() {
 		HashSet<Integer> s = new HashSet<Integer>();
 		for(TaskTypeTuple t: nextTask) {
