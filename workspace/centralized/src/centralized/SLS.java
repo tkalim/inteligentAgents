@@ -70,7 +70,7 @@ public class SLS {
     }
     
     private boolean isTimeout() {
-    	return System.currentTimeMillis() - time_start >= 0.9*timeout;
+    	return System.currentTimeMillis() - time_start >= 0.95*timeout;
     }
     
     private Solution selectInitialSolutionLargestVehicle(List<Vehicle> vehicles, TaskSet tasks){
@@ -175,7 +175,7 @@ public class SLS {
 	public Solution localChoice(List<Solution> N, Solution oldA) {
 	    Random generator = new Random();
 	    int probability = generator.nextInt(10) + 1;
-	    int threshold = 5;
+	    int threshold = 4;
 	    if(probability <= threshold && !N.isEmpty())
 	      return Collections.min(N, new SolutionComparator());
 	    return oldA;
