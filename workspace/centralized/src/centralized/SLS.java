@@ -45,7 +45,7 @@ public class SLS {
     private List<Plan> slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
         Solution A = selectInitialSolution(vehicles, tasks);
 
-        int max_iter = 200000;
+        int max_iter = 100000;
         int iter = 0;
         
         // put the time and # of iterations
@@ -58,12 +58,20 @@ public class SLS {
           
           iter += 1;
         }
+        
+        System.out.println("Number of iterations: " + iter);
+        System.out.println("Total Cost: " + Double.toString(A.getCost()));
+        System.out.println("Plans");
+        for(VehiclePlan vp: A.solution) {
+        	System.out.println("Vehicle " + vp.vehicle.id());
+        	System.out.println(vp.getPlan());
+        }
 
         return A.getPlans();
     }
     
     private boolean isTimeout() {
-    	return System.currentTimeMillis() - time_start > timeout;
+    	return System.currentTimeMillis() - time_start >= 0.99*timeout;
     }
     
     private Solution selectInitialSolution(List<Vehicle> vehicles, TaskSet tasks){
@@ -122,7 +130,7 @@ public class SLS {
 	public Solution localChoice(List<Solution> N, Solution oldA) {
 	    Random generator = new Random();
 	    int probability = generator.nextInt(10) + 1;
-	    int threshold = 3;
+	    int threshold = 5;
 	    if(probability <= threshold && !N.isEmpty())
 	      return Collections.min(N, new SolutionComparator());
 	    return oldA;
