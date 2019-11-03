@@ -3,6 +3,7 @@ package centralized;
 import java.util.ArrayList;
 import java.util.List;
 
+import logist.plan.Plan;
 import logist.simulation.Vehicle;
 
 public class Solution {
@@ -27,6 +28,13 @@ public class Solution {
 		}
 		return accumulatedCost;
 	}
-
+	
+	public List<Plan> getPlans(){
+		ArrayList<Plan> plans = new ArrayList<Plan>();
+		for(VehiclePlan vp: solution) {
+			plans.add(vp.getPlan());
+		}
+		return plans;
+	}
 
 }
