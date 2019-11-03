@@ -18,7 +18,7 @@ public class Solution {
 	
 	// copy constructor 
 	Solution(Solution s) { 
-		solution = new ArrayList<VehiclePlan>(s.solution);
+		solution = new ArrayList<VehiclePlan>();
 		// deep-copy
 		for(VehiclePlan vp : s.solution) {
 			solution.add(new VehiclePlan(vp));
