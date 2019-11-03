@@ -38,15 +38,21 @@ public class VehiclePlan {
 
 	// should be careful and should clone the vehicle before doing the modifications
 	// should be careful if v1 does not have any task
-	public static void changingVehicle(VehiclePlan v1, VehiclePlan v2) {
-
+	public static Solution changingVehicle(Solution A, int v1Idx, int v2Idx) {
+		
+		// construct a new solution based on the previous one
+		Solution newA = new Solution(A);
+		
 		// fetch the first task from v1 (pickup + its delivery)
-		TaskTypeTuple tPickUp = v1.removeFirstPickUpAction();
-		TaskTypeTuple tDelivery = v1.removeDeliveryOfFirstPickUpAction(tPickUp);
+		TaskTypeTuple tPickUp = newA.solution.get(v1Idx).removeFirstPickUpAction();
+		TaskTypeTuple tDelivery = newA.solution.get(v1Idx).removeDeliveryOfFirstPickUpAction(tPickUp);
 
 		// adding the first task of v1 to v2
-		v2.nextTask.add(tDelivery);
-		v2.nextTask.add(tPickUp);
+		newA.solution.get(v2Idx).nextTask.add(tDelivery);
+		newA.solution.get(v2Idx).nextTask.add(tPickUp);
+		
+		// check constraint and return newA if all fine
+		return newA.solution.get(v2Idx).checkMaxCapacityContraint() == false? null: newA;
 	}
 
 	public boolean changingTaskOrder(int idx1, int idx2){
