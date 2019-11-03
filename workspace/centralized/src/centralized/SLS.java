@@ -46,6 +46,8 @@ public class SLS {
         //Solution A = selectInitialSolutionLargestVehicle(vehicles, tasks);
         Solution A = selectInitialSolutionRandomVehicle(vehicles, tasks);
         
+        System.out.println("InitialSolution: \n" + A);
+        
         int max_iter = 1000000;
         int iter = 0;
         
@@ -61,18 +63,13 @@ public class SLS {
         }
         
         System.out.println("Number of iterations: " + iter);
-        System.out.println("Total Cost: " + Double.toString(A.getCost()));
-        System.out.println("Plans");
-        for(VehiclePlan vp: A.solution) {
-        	System.out.println("Vehicle " + vp.vehicle.id());
-        	System.out.println(vp.getPlan());
-        }
+        System.out.println("Final Solution: \n " + A);
 
         return A.getPlans();
     }
     
     private boolean isTimeout() {
-    	return System.currentTimeMillis() - time_start >= 0.99*timeout;
+    	return System.currentTimeMillis() - time_start >= 0.9*timeout;
     }
     
     private Solution selectInitialSolutionLargestVehicle(List<Vehicle> vehicles, TaskSet tasks){
@@ -102,7 +99,7 @@ public class SLS {
     	  while(true) {
     		  randomVehicleIdx = r.nextInt(vehicles.size());
     		  // add it only if the vehicle is able to carry it
-    		  if(A.solution.get(randomVehicleIdx).getCurrentLoad() - A.solution.get(randomVehicleIdx).vehicle.capacity() >= t.weight) {
+    		  if(A.solution.get(randomVehicleIdx).vehicle.capacity() - A.solution.get(randomVehicleIdx).getCurrentLoad() >= t.weight) {
     			  break;
     		  }
     	  }
