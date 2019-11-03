@@ -35,6 +35,16 @@ public class VehiclePlan {
 		this.nextTask = new ArrayList<TaskTypeTuple>();
 		this.plan = null;
 	}
+	
+	public VehiclePlan(VehiclePlan vehiclePlan) {
+		
+		this.vehicle = vehiclePlan.vehicle;
+		this.plan = null;
+		this.nextTask = new ArrayList<TaskTypeTuple>();
+		// deep copy
+		for(TaskTypeTuple task: vehiclePlan.nextTask)
+			nextTask.add(new TaskTypeTuple(task));
+	}
 
 	// should be careful and should clone the vehicle before doing the modifications
 	// should be careful if v1 does not have any task

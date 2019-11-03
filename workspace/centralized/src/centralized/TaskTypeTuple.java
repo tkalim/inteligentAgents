@@ -6,6 +6,11 @@ public class TaskTypeTuple {
 	public Task task;
 	public String type;
 	
+	TaskTypeTuple(TaskTypeTuple t){
+		this.task = t.task;
+		this.type = t.type;
+	}
+	
 	TaskTypeTuple(Task task, String type){
 		this.task = task;
 		this.type = type;
