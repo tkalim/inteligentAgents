@@ -89,6 +89,16 @@ public class SLS {
 		return index;
 	}
 	
+	public int randomVehicleIndex(Solution A) {
+		// choose random vehicle which has at least one task
+		while(true) {
+			Random r = new Random();
+    		int randomIdx = r.nextInt(A.solution.size());
+    		if(!A.solution.get(randomIdx).nextTask.isEmpty())
+				return randomIdx;
+		}
+	}
+	
 	class SolutionComparator implements Comparator<Solution> {
 	    public int compare(Solution a, Solution b) {
 	    	double aCost = a.getCost();
@@ -113,6 +123,8 @@ public class SLS {
 	      return Collections.min(N, new SolutionComparator());
 	    return oldA;
 	}
+	
+	public Vehicle 
 
 //	public ArrayList<Solution> chooseNeighbours(Solution oldA){
 //		oldA.solution.get(index)
