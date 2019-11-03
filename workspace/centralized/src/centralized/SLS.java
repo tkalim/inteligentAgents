@@ -44,7 +44,8 @@ public class SLS {
 
     private List<Plan> slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
         //Solution A = selectInitialSolutionLargestVehicle(vehicles, tasks);
-        Solution A = selectInitialSolutionRandomVehicle(vehicles, tasks);
+        //Solution A = selectInitialSolutionRandomVehicle(vehicles, tasks);
+    	Solution A = selectInitialSolutionClosestVehicle(vehicles, tasks);
         
         System.out.println("InitialSolution: \n" + A);
         
@@ -109,6 +110,29 @@ public class SLS {
 
       return A;
     }
+    
+    private Solution selectInitialSolutionClosestVehicle(List<Vehicle> vehicles, TaskSet tasks){
+      Solution A = new Solution(vehicles);
+
+      // assign a task to the closest vehicle
+      for(Task t : tasks) {
+    	  int closestVehicleIdx = -1;
+    	  double closestVehicleDistance = Double.MAX_VALUE;
+    	  for(int i = 0; i < vehicles.size(); i++) {
+    		  if(closestVehicleDistance > t.pickupCity.distanceTo(A.solution.get(i).vehicle.homeCity())
+    				&& A.solution.get(i).vehicle.capacity() - A.solution.get(i).getCurrentLoad() >= t.weight) {
+    			  closestVehicleIdx = i;
+    			  closestVehicleDistance = t.pickupCity.distanceTo(A.solution.get(i).vehicle.homeCity());
+    		  }
+    	  }
+    	  A.solution.get(closestVehicleIdx).nextTask.add(new TaskTypeTuple(t, "PickUp"));
+    	  A.solution.get(closestVehicleIdx).nextTask.add(new TaskTypeTuple(t, "Delivery"));
+      }
+
+      return A;
+    }
+    
+    
 
 	public int largestVehicleIndex(List<Vehicle> vehicles){
 		Vehicle maxCapacityVehicle = vehicles.get(0);
