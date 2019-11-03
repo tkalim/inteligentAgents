@@ -73,6 +73,9 @@ public class Centralized implements CentralizedBehavior {
           Naive naive = new Naive(vehicles, tasks);
           plans = naive.plan();
           break;
+        case SLS:
+        	SLS sls = new SLS(vehicles, tasks, timeout_plan);
+        	plans = sls.plan();
 		default:
 			break;
 	  }
