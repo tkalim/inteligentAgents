@@ -46,8 +46,10 @@ public class Solution {
 		str.append("Total Cost: " + Double.toString(this.getCost()) + "\n");
         str.append("Plans\n");
         for(VehiclePlan vp: this.solution) {
-        	str.append("Vehicle " + vp.vehicle.id() + "\n");
-        	str.append(vp.getPlan() + "\n");
+        	Plan plan = vp.getPlan();
+        	str.append("Vehicle " + vp.vehicle.id() + " " + ", # of tasks: " + this.solution.size()/2 + ", distance " + 
+        				plan.totalDistance() + ", costPerkm " + vp.vehicle.costPerKm() + ", Capacity" + vp.vehicle.capacity() + "\n");
+        	str.append(plan + "\n");
         }
         return str.toString();
 	}
