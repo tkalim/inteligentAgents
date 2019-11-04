@@ -23,11 +23,14 @@ public class SLS {
     private TaskSet tasks;
     long timeout;
     long time_start;
+	Random r;
+
 
     public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
       this.vehicles = vehicles;
       this.tasks = tasks;
       this.timeout = timeout;
+      this.r = new Random();
     }
 
     public List<Plan> plan() {
@@ -94,7 +97,6 @@ public class SLS {
 
 
       for(Task t : tasks) {
-    	  Random r = new Random();
     	  int randomVehicleIdx;
     	  // find a random vehicle that is able to carry the task
     	  while(true) {
@@ -149,7 +151,6 @@ public class SLS {
 	public int randomVehicleIndex(Solution A) {
 		// choose random vehicle which has at least one task
 		while(true) {
-			Random r = new Random();
     		int randomIdx = r.nextInt(A.solution.size());
     		if(!A.solution.get(randomIdx).nextTask.isEmpty())
 				return randomIdx;
@@ -162,7 +163,6 @@ public class SLS {
 	    	double bCost = b.getCost();
 	    	if(aCost == bCost) {
 	    		// flip-coin
-	    		Random r = new Random();
 	    		int chance = r.nextInt(2);
 	    		if(chance == 1)
 	    			return 1;
@@ -173,8 +173,7 @@ public class SLS {
 	}
 
 	public Solution localChoice(List<Solution> N, Solution oldA) {
-	    Random generator = new Random();
-	    int probability = generator.nextInt(10) + 1;
+	    int probability = r.nextInt(10) + 1;
 	    int threshold = 4;
 	    if(probability <= threshold && !N.isEmpty())
 	      return Collections.min(N, new SolutionComparator());
