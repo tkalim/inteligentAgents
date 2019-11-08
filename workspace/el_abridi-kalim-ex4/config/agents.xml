@@ -11,7 +11,7 @@
 		<set algorithm="NAIVE"/>
 	</agent>
 
-	<agent name="centralized-sls">
+	<agent name="centralized-main">
 		<set class-path="bin/"/>
 		<set class-name="centralized.Centralized"/>
 		<set algorithm="SLS"/>

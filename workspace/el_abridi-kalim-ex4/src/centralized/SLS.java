@@ -174,7 +174,7 @@ public class SLS {
 
 	public Solution localChoice(List<Solution> N, Solution oldA) {
 	    int probability = r.nextInt(10) + 1;
-	    int threshold = 4;
+	    int threshold = 3;
 	    if(probability <= threshold && !N.isEmpty())
 	      return Collections.min(N, new SolutionComparator());
 	    return oldA;
