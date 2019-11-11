@@ -1,12 +1,15 @@
 package template;
 
+import java.io.File;
 //the list of imports
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import logist.LogistSettings;
 import logist.Measures;
 import logist.behavior.AuctionBehavior;
+import logist.config.Parsers;
 import logist.agent.Agent;
 import logist.simulation.Vehicle;
 import logist.plan.Plan;
@@ -31,10 +34,21 @@ public class AuctionTemplate implements AuctionBehavior {
 	private Vehicle vehicle;
 	private City currentCity;
     private long timeout_plan;
+    private long timeout_bid;
+    private long timeout_setup;
 
 	@Override
 	public void setup(Topology topology, TaskDistribution distribution,
 			Agent agent) {
+		
+		  // this code is used to get the timeouts
+        LogistSettings ls = null;
+        try {
+            ls = Parsers.parseSettings("config" + File.separator + "settings_default.xml");
+        }
+        catch (Exception exc) {
+            System.out.println("There was a problem loading the configuration file.");
+        }
 
 		this.topology = topology;
 		this.distribution = distribution;
@@ -46,6 +60,8 @@ public class AuctionTemplate implements AuctionBehavior {
 		this.random = new Random(seed);
 		// the plan method cannot execute more than timeout_plan milliseconds
         timeout_plan = ls.get(LogistSettings.TimeoutKey.PLAN);
+        timeout_bid = ls.get(LogistSettings.TimeoutKey.BID);
+        timeout_setup = ls.get(LogistSettings.TimeoutKey.SETUP);
 	}
 
 	@Override
