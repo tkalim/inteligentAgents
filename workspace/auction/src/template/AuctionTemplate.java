@@ -92,7 +92,7 @@ public class AuctionTemplate implements AuctionBehavior {
 	@Override
 	public List<Plan> plan(List<Vehicle> vehicles, TaskSet tasks) {
     	SLS sls = new SLS(vehicles, tasks, timeout_plan);
-    	plans = sls.plan();
+    	List<Plan> plans = sls.plan();
 		return plans;
 	}
 
