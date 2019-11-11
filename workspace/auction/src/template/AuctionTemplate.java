@@ -44,7 +44,7 @@ public class AuctionTemplate implements AuctionBehavior {
 		  // this code is used to get the timeouts
         LogistSettings ls = null;
         try {
-            ls = Parsers.parseSettings("config" + File.separator + "settings_default.xml");
+            ls = Parsers.parseSettings("config" + File.separator + "settings_auction.xml");
         }
         catch (Exception exc) {
             System.out.println("There was a problem loading the configuration file.");
