@@ -1,4 +1,4 @@
-package centralized;
+package template;
 
 import logist.task.Task;
 

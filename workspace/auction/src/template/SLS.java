@@ -1,4 +1,4 @@
-package centralized;
+package template;
 /* import table */
 import logist.simulation.Vehicle;
 
