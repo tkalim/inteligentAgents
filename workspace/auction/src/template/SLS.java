@@ -67,7 +67,11 @@ public class SLS {
     private List<Plan> slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
         //Solution A = selectInitialSolutionLargestVehicle(vehicles, tasks);
         //Solution A = selectInitialSolutionRandomVehicle(vehicles, tasks);
-    	Solution A = selectInitialSolutionClosestVehicle(vehicles, tasks);
+    	Solution A;
+    	if(this.bestSolution == null)
+    		A = selectInitialSolutionClosestVehicle(vehicles, tasks);
+    	else 
+    		A = this.bestSolution;
         
         System.out.println("InitialSolution: \n" + A);
         
