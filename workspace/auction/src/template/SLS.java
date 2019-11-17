@@ -25,7 +25,24 @@ public class SLS {
     long time_start;
 	Random r;
 	public Solution bestSolution;
-
+	
+    public SLS(SLS sls, Task additionalTask, long timeout){
+    	// the vehicle do not change per agent for SLS (no need for deep copy)
+    	this.vehicles = sls.vehicles;
+		
+    	// forming a new set of tasks (whenever there is a new task auctioned)
+        this.tasks = TaskSet.copyOf(sls.tasks);
+        this.tasks.add(additionalTask);
+        
+        this.timeout = timeout;
+        this.r = new Random();
+        // the new best solution relies on the best solution of the previous SLS (which tS - additionalTask)
+        // and the best new local solution on where to put this tasks (before running a convergence SLS again)
+        // to be continued...
+        this.bestSolution = new Solution(sls.bestSolution);
+      }
+    
+    
 
     public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
       this.vehicles = vehicles;
