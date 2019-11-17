@@ -38,10 +38,9 @@ public class SLS {
         this.r = new Random();
         // the new best solution relies on the best solution of the previous SLS (which tS - additionalTask)
         // and the best new local solution on where to put this tasks (before running a convergence SLS again)
-        // to be continued...
-        this.bestSolution = new Solution(sls.bestSolution);
+        // to be continued... (fixed)
+        this.bestSolution = selectLocalBestSolution(sls.bestSolution, additionalTask);
       }
-    
     
 
     public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
@@ -100,6 +99,39 @@ public class SLS {
     
     private boolean isTimeout() {
     	return System.currentTimeMillis() - time_start >= 0.95*timeout;
+    }
+    
+    private Solution selectLocalBestSolution(Solution A, Task additionalTask) {
+    	double minCost = Double.MAX_VALUE;
+    	Solution bestSolution = null;
+    	
+    	// remember that this only produce only the local solution from previous global solution with one less task
+    	// to converge again (or at least try) to global one we need to rerun SLS with this as initial Solution to start with
+    	
+    	// try adding the task to all vehicles and to between every position of nextTask
+    	for(int i = 0 ; i < vehicles.size(); i++) {
+    		// if the task is too have for the vehicle then just skip
+    		if(additionalTask.weight > vehicles.get(i).capacity())
+    			continue;
+    		
+    		for(int j = 0 ; j < A.solution.get(i).nextTask.size(); j++) {
+    			// start from index j+1 as we want to position PickUp then Delivery
+    			// the or equal in the condition is there at the Delivery can be the last thing
+    			// number of positions in a list of n is n+1
+    			for(int z = j+1 ; z <= A.solution.get(i).nextTask.size(); z++) {
+        			Solution newA = new Solution(A);
+        			newA.solution.get(i).nextTask.add(j, new TaskTypeTuple(additionalTask, "PickUp"));
+        			newA.solution.get(i).nextTask.add(z, new TaskTypeTuple(additionalTask, "Delivery"));
+        			// we only need to check the capacity contraint as the timeline
+        			// contraint is being respect by default when constructing the new solution
+        			if(newA.solution.get(i).checkMaxCapacityContraint() && newA.getCost() < minCost) {
+        				bestSolution = newA;
+        				minCost = bestSolution.getCost();
+        			}
+        		}
+    		}
+    	}
+    	return bestSolution;
     }
     
     private Solution selectInitialSolutionLargestVehicle(List<Vehicle> vehicles, TaskSet tasks){
