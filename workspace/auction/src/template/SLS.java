@@ -24,6 +24,7 @@ public class SLS {
     long timeout;
     long time_start;
 	Random r;
+	public Solution bestSolution;
 
 
     public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
@@ -31,6 +32,7 @@ public class SLS {
       this.tasks = tasks;
       this.timeout = timeout;
       this.r = new Random();
+      this.bestSolution = null;
     }
 
     public List<Plan> plan() {
@@ -69,6 +71,9 @@ public class SLS {
         System.out.println("Number of iterations: " + iter);
         System.out.println("Final Solution: \n " + A);
 
+        // store the best solution
+        this.bestSolution = A;
+        
         return A.getPlans();
     }
     
