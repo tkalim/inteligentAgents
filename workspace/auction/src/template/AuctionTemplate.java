@@ -43,6 +43,11 @@ public class AuctionTemplate implements AuctionBehavior {
     private double opponentMargin;
     private double opponentUpperMargin;
     private double opponentLowerMargin;
+    
+    private SLS sls;
+    private SLS potentialNewSls;
+    private SLS opponentSls;
+    private SLS opponentPotentialNewSls;
 
 	@Override
 	public void setup(Topology topology, TaskDistribution distribution,
@@ -91,9 +96,23 @@ public class AuctionTemplate implements AuctionBehavior {
 		if (winner == agent.id()) {
 			//System.out.println("winner of the bid is " + agent.id());
 			//currentCity = previous.deliveryCity;
-			
-			
+			// potentialNewSls is with the new task included
+			sls = potentialNewSls;
+			// adding more to our margin while not exceeding the max
+			margin = Math.min(upperMargin, margin + 0.01);
+			// we assume that the opponent is lowering its margin to match us in the next bid
+			opponentMargin = Math.max(opponentLowerMargin, opponentMargin - 0.01);
 		}
+		else {
+			// potentialNewSls is with the new task included
+			opponentSls = opponentPotentialNewSls;
+			// decreansing our margin to become more competitive while not going below the lowerbound
+			margin = Math.max(lowerMargin, margin - 0.01);
+			// we assume that the opponent trying to higher its margin to gain more money in the next bid
+			// while not exceeding its uppermargin
+			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + 0.01);
+		}
+		
 		
 	}
 	
