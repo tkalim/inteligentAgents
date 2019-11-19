@@ -36,6 +36,13 @@ public class AuctionTemplate implements AuctionBehavior {
     private long timeout_plan;
     private long timeout_bid;
     private long timeout_setup;
+    private double minOpponentBid;
+    private double margin;
+    private double upperMargin;
+    private double lowerMargin;
+    private double opponentMargin;
+    private double opponentUpperMargin;
+    private double opponentLowerMargin;
 
 	@Override
 	public void setup(Topology topology, TaskDistribution distribution,
@@ -62,14 +69,32 @@ public class AuctionTemplate implements AuctionBehavior {
         timeout_plan = ls.get(LogistSettings.TimeoutKey.PLAN);
         timeout_bid = ls.get(LogistSettings.TimeoutKey.BID);
         timeout_setup = ls.get(LogistSettings.TimeoutKey.SETUP);
+        minOpponentBid = Double.MAX_VALUE;
+        
+        // hyperparam
+        upperMargin = 0.8;
+        lowerMargin = 0.7;
+        margin = (upperMargin + lowerMargin) / 2;
+        
+        opponentUpperMargin = 0.9;
+        opponentLowerMargin = 0.8;
+        opponentMargin = (opponentUpperMargin + opponentLowerMargin) / 2;
+        
 	}
 
 	@Override
 	public void auctionResult(Task previous, int winner, Long[] bids) {	
+		double bid = bids[agent.id()];
+		double opponentBid = bids[(agent.id() + 1) % 2];
+		minOpponentBid = Math.min(minOpponentBid, opponentBid);
+		
 		if (winner == agent.id()) {
-			System.out.println("winner of the bid is " + agent.id());
-			currentCity = previous.deliveryCity;
+			//System.out.println("winner of the bid is " + agent.id());
+			//currentCity = previous.deliveryCity;
+			
+			
 		}
+		
 	}
 	
 	@Override
