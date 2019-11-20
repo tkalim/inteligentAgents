@@ -140,8 +140,8 @@ public class AuctionTemplate implements AuctionBehavior {
 		potentialNewSls = new SLS(sls, task, timeout_bid/2);
 		opponentPotentialNewSls = new SLS(opponentSls, task, timeout_bid/2);
 		
-		assert(potentialNewSls.plan().size() == sls.plan().size() + 1);
-		assert(opponentPotentialNewSls.plan().size() == opponentSls.plan().size() + 1);
+		assert(potentialNewSls.bestSolution.getNumberOfTasks() == sls.bestSolution.getNumberOfTasks() + 1);
+		assert(opponentPotentialNewSls.bestSolution.getNumberOfTasks() == opponentSls.bestSolution.getNumberOfTasks() + 1);
 		
 		double marginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
 		double opponentMarginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
@@ -167,7 +167,7 @@ public class AuctionTemplate implements AuctionBehavior {
 	public List<Plan> plan(List<Vehicle> vehicles, TaskSet tasks) {
     	List<Plan> plans = sls.plan();
     	// check that the plan that we have been constructing includes all the tasks won
-		assert tasks.size() == plans.size();
+		assert tasks.size() == sls.bestSolution.getNumberOfTasks();
 		return plans;
 	}
 

@@ -41,6 +41,14 @@ public class Solution {
 		return plans;
 	}
 	
+	public int getNumberOfTasks() {
+		int count = 0;
+		for(VehiclePlan vp: solution) {
+			count += vp.nextTask.size() / 2;
+		}
+		return count;
+	}
+	
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append("Total Cost: " + Double.toString(this.getCost()) + "\n");
