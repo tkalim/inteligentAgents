@@ -43,11 +43,15 @@ public class AuctionTemplate implements AuctionBehavior {
     private double opponentMargin;
     private double opponentUpperMargin;
     private double opponentLowerMargin;
+    private int round = 0;
+    private int initialDiscountRounds = 5;
+    private double initialDiscount = 0.5;
     
     private SLS sls;
     private SLS potentialNewSls;
     private SLS opponentSls;
     private SLS opponentPotentialNewSls;
+    
 
 	@Override
 	public void setup(Topology topology, TaskDistribution distribution,
@@ -121,16 +125,42 @@ public class AuctionTemplate implements AuctionBehavior {
 		if (vehicle.capacity() < task.weight)
 			return null;
 
-		long distanceTask = task.pickupCity.distanceUnitsTo(task.deliveryCity);
-		long distanceSum = distanceTask
-				+ currentCity.distanceUnitsTo(task.pickupCity);
-		double marginalCost = Measures.unitsToKM(distanceSum
-				* vehicle.costPerKm());
-
-		double ratio = 1.0 + (random.nextDouble() * 0.05 * task.id);
-		double bid = ratio * marginalCost;
-		System.out.println("Agent " + agent.id() + " bidding price of " + task.id + " is " + (long) Math.round(bid));
-		return (long) Math.round(bid);
+//		long distanceTask = task.pickupCity.distanceUnitsTo(task.deliveryCity);
+//		long distanceSum = distanceTask
+//				+ currentCity.distanceUnitsTo(task.pickupCity);
+//		double marginalCost = Measures.unitsToKM(distanceSum
+//				* vehicle.costPerKm());
+//
+//		double ratio = 1.0 + (random.nextDouble() * 0.05 * task.id);
+//		double bid = ratio * marginalCost;
+//		System.out.println("Agent " + agent.id() + " bidding price of " + task.id + " is " + (long) Math.round(bid));
+//		return (long) Math.round(bid);
+		
+		// initializing two new SLS planning with the additional task
+		potentialNewSls = new SLS(sls, task, timeout_bid/2);
+		opponentPotentialNewSls = new SLS(opponentSls, task, timeout_bid/2);
+		
+		assert(potentialNewSls.plan().size() == sls.plan().size() + 1);
+		assert(opponentPotentialNewSls.plan().size() == opponentSls.plan().size() + 1);
+		
+		double marginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
+		double opponentMarginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
+		
+		// rule-based bidding
+		double bid = Math.min(marginalCost * margin, opponentMarginalCost * opponentMargin);
+		
+		if(round > 0 && bid < minOpponentBid) {
+			bid = Math.max(0, minOpponentBid - 1);
+		}
+		
+		// initial aggresive discounting for the first tasks
+		// initialDiscountRounds might be different depending on the # of takss offered (look at the TD)
+		if(round < initialDiscountRounds) {
+			bid = bid * initialDiscount;
+		}
+		
+		round++;
+		return (long) Math.floor(bid);
 	}
 
 	@Override
