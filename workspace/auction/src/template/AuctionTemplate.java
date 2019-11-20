@@ -80,6 +80,15 @@ public class AuctionTemplate implements AuctionBehavior {
         timeout_setup = ls.get(LogistSettings.TimeoutKey.SETUP);
         minOpponentBid = Double.MAX_VALUE;
         
+        // setting the PDP 
+        // TODO: double check this new TaskSet is not creating some funky problems
+        // agent.getTasks() is expected to be empty
+        assert agent.getTasks().size() == 0;
+        sls = new SLS(agent.vehicles(), agent.getTasks(), timeout_bid/2);
+        // opponent will have a different set of vehicles with their homecity and capacity
+        // let's assume for now they are the same
+        opponentSls = new SLS(agent.vehicles(), agent.getTasks(), timeout_bid/2);
+        
         // hyperparam
         upperMargin = 0.8;
         lowerMargin = 0.7;
@@ -88,6 +97,8 @@ public class AuctionTemplate implements AuctionBehavior {
         opponentUpperMargin = 0.9;
         opponentLowerMargin = 0.8;
         opponentMargin = (opponentUpperMargin + opponentLowerMargin) / 2;
+        
+        
         
 	}
 
