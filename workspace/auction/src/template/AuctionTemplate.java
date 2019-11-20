@@ -176,6 +176,7 @@ public class AuctionTemplate implements AuctionBehavior {
 
 	@Override
 	public List<Plan> plan(List<Vehicle> vehicles, TaskSet tasks) {
+		// TODO: fix the timeout to be the one of the plan instead of bid
     	List<Plan> plans = sls.plan();
     	// check that the plan that we have been constructing includes all the tasks won
 		assert tasks.size() == sls.bestSolution.getNumberOfTasks();
