@@ -194,7 +194,7 @@ public class SLS {
     
     
 
-	public int largestVehicleIndex(List<Vehicle> vehicles){
+	public static int largestVehicleIndex(List<Vehicle> vehicles){
 		Vehicle maxCapacityVehicle = vehicles.get(0);
 		int index = 0;
 		for(int i = 0 ; i < vehicles.size(); i++) {
