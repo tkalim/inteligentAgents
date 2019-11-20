@@ -113,7 +113,6 @@ public class AuctionTemplate implements AuctionBehavior {
 			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + 0.01);
 		}
 		
-		
 	}
 	
 	@Override
@@ -136,8 +135,9 @@ public class AuctionTemplate implements AuctionBehavior {
 
 	@Override
 	public List<Plan> plan(List<Vehicle> vehicles, TaskSet tasks) {
-    	SLS sls = new SLS(vehicles, tasks, timeout_plan);
     	List<Plan> plans = sls.plan();
+    	// check that the plan that we have been constructing includes all the tasks won
+		assert tasks.size() == plans.size();
 		return plans;
 	}
 
