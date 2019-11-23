@@ -133,8 +133,9 @@ public class AuctionTemplate implements AuctionBehavior {
 	@Override
 	public Long askPrice(Task task) {
 		int largestVehicleIdx = SLS.largestVehicleIndex(agent.vehicles());
-		if (agent.vehicles().get(largestVehicleIdx).capacity() < task.weight)
+		if (agent.vehicles().get(largestVehicleIdx).capacity() < task.weight) {
 			return null;
+		}
 
 //		long distanceTask = task.pickupCity.distanceUnitsTo(task.deliveryCity);
 //		long distanceSum = distanceTask
