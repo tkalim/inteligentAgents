@@ -107,7 +107,7 @@ public class SLS {
     }
     
     private Solution selectLocalBestSolution(Solution A, Task additionalTask) {
-    	double minCost = Doublethe best I had. Met a gutter punk at a house party on Halloween night and we left shortly after. We end up fucking in an empty dorm room and it was just amazing. She could throw it back and she just knew how to move every part of her body. When I was about to cum.MAX_VALUE;
+    	double minCost = Double.MAX_VALUE;
     	Solution bestSolution = null;
     	
     	// remember that this only produce only the local solution from previous global solution with one less task
