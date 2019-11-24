@@ -183,13 +183,12 @@ public class AuctionTemplate implements AuctionBehavior {
 		System.out.println("marginCost = " + marginalCost);
 		System.out.println("opponentMarginalCost = " + opponentMarginalCost);
 		System.out.println("minOpponentBid = " + minOpponentBid);
-		long distanceTask = task.pickupCity.distanceUnitsTo(task.deliveryCity);
-		long distanceSum = distanceTask
-				+ currentCity.distanceUnitsTo(task.pickupCity);
-		double dummycost = Measures.unitsToKM(distanceSum
-				* vehicle.costPerKm());
+		double distanceTask = task.pickupCity.distanceTo(task.deliveryCity);
+		double distanceSum = distanceTask
+				+ currentCity.distanceTo(task.pickupCity);
+		double dummycost = distanceSum * vehicle.costPerKm();
 		System.out.println("dummy distance =" + distanceSum);
-		System.out.println("dummycost =" + distanceSum);
+		System.out.println("dummycost =" + dummycost);
 
 		
 		
