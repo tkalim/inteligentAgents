@@ -22,7 +22,7 @@ import logist.topology.Topology.City;
 /**
  * A very simple auction agent that assigns all tasks to its first vehicle and
  * handles them sequentially.
- * 
+ *
  */
 @SuppressWarnings("unused")
 public class AuctionTemplate implements AuctionBehavior {
@@ -46,24 +46,24 @@ public class AuctionTemplate implements AuctionBehavior {
     private int round = 0;
     private int initialDiscountRounds = 6;
     private double initialDiscount = 0.5;
-    
+
     private SLS sls;
     private SLS potentialNewSls;
     private SLS opponentSls;
     private SLS opponentPotentialNewSls;
-    
+
 
 	@Override
 	public void setup(Topology topology, TaskDistribution distribution,
 			Agent agent) {
-		
+
 		  // this code is used to get the timeouts
         LogistSettings ls = null;
         try {
             ls = Parsers.parseSettings("config" + File.separator + "settings_auction.xml");
         }
         catch (Exception exc) {
-            System.out.println("There was a problem loading the configuration file.");
+            //System.out.println("There was a problem loading the configuration file.");
         }
 
 		this.topology = topology;
@@ -79,8 +79,8 @@ public class AuctionTemplate implements AuctionBehavior {
         timeout_bid = ls.get(LogistSettings.TimeoutKey.BID);
         timeout_setup = ls.get(LogistSettings.TimeoutKey.SETUP);
         minOpponentBid = Double.MAX_VALUE;
-        
-        // setting the PDP 
+
+        // setting the PDP
         // TODO: double check this new TaskSet is not creating some funky problems
         // agent.getTasks() is expected to be empty
         assert agent.getTasks().size() == 0;
@@ -88,32 +88,32 @@ public class AuctionTemplate implements AuctionBehavior {
         // opponent will have a different set of vehicles with their homecity and capacity
         // let's assume for now they are the same
         opponentSls = new SLS(agent.vehicles(), timeout_bid/2);
-        
+
         // hyperparam
         upperMargin = 0.75;
         lowerMargin = 0.85;
         margin = (upperMargin + lowerMargin) / 2;
-        
+
         opponentUpperMargin = 0.9;
         opponentLowerMargin = 0.8;
         opponentMargin = (opponentUpperMargin + opponentLowerMargin) / 2;
-        
-        
-        
+
+
+
 	}
 
 	@Override
-	public void auctionResult(Task previous, int winner, Long[] bids) {	
+	public void auctionResult(Task previous, int winner, Long[] bids) {
 		double bid = bids[agent.id()];
 		double opponentBid = bids[(agent.id() + 1) % 2];
 		minOpponentBid = Math.min(minOpponentBid, opponentBid);
-		
+
 		double step = 0.04;
 		if (winner == agent.id()) {
-			System.out.println("I won the previous bid");
-			System.out.println("my bid " + bid);
-			System.out.println("opponent bid " + opponentBid);
-			
+			////System.out.println("I won the previous bid");
+			//System.out.println("my bid " + bid);
+			//System.out.println("opponent bid " + opponentBid);
+
 			//currentCity = previous.deliveryCity;
 			// potentialNewSls is with the new task included
 			sls = potentialNewSls;
@@ -123,9 +123,9 @@ public class AuctionTemplate implements AuctionBehavior {
 			opponentMargin = Math.max(opponentLowerMargin, opponentMargin - step);
 		}
 		else {
-			System.out.println("OPPONENT won the previous bid");
-			System.out.println("my bid " + bid);
-			System.out.println("opponent bid " + opponentBid);
+			//System.out.println("OPPONENT won the previous bid");
+			//System.out.println("my bid " + bid);
+			//System.out.println("opponent bid " + opponentBid);
 			// potentialNewSls is with the new task included
 			opponentSls = opponentPotentialNewSls;
 			// decreansing our margin to become more competitive while not going below the lowerbound
@@ -134,18 +134,18 @@ public class AuctionTemplate implements AuctionBehavior {
 			// while not exceeding its uppermargin
 			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + step);
 		}
-		System.out.println("------------------------");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
+		//System.out.println("------------------------");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
 
 	}
-	
+
 	@Override
 	public Long askPrice(Task task) {
-		System.out.println("ROUND " + round);
+		//System.out.println("ROUND " + round);
 		int largestVehicleIdx = SLS.largestVehicleIndex(agent.vehicles());
 		if (agent.vehicles().get(largestVehicleIdx).capacity() < task.weight)
 			return null;
@@ -158,9 +158,9 @@ public class AuctionTemplate implements AuctionBehavior {
 //
 //		double ratio = 1.0 + (random.nextDouble() * 0.05 * task.id);
 //		double bid = ratio * marginalCost;
-//		System.out.println("Agent " + agent.id() + " bidding price of " + task.id + " is " + (long) Math.round(bid));
+//		//System.out.println("Agent " + agent.id() + " bidding price of " + task.id + " is " + (long) Math.round(bid));
 //		return (long) Math.round(bid);
-		
+
 		// initializing two new SLS planning with the additional task
 		potentialNewSls = new SLS(sls, task, timeout_bid/2);
 		opponentPotentialNewSls = new SLS(opponentSls, task, timeout_bid/2);
@@ -172,10 +172,10 @@ public class AuctionTemplate implements AuctionBehavior {
 			opponentPotentialNewSls.plan();
 		}
 
-		
+
 		assert(potentialNewSls.bestSolution.getNumberOfTasks() == sls.bestSolution.getNumberOfTasks() + 1);
 		assert(opponentPotentialNewSls.bestSolution.getNumberOfTasks() == opponentSls.bestSolution.getNumberOfTasks() + 1);
-		
+
 		double marginalCost;
 		double opponentMarginalCost;
 		if(round != 0) {
@@ -186,36 +186,36 @@ public class AuctionTemplate implements AuctionBehavior {
 			marginalCost = potentialNewSls.bestSolution.getCost();
 			opponentMarginalCost = opponentPotentialNewSls.bestSolution.getCost();
 		}
-		System.out.println("Task = " + task);
-		System.out.println("Task reward " + task.reward);
-		System.out.println("marginCost = " + marginalCost);
-		System.out.println("opponentMarginalCost = " + opponentMarginalCost);
-		System.out.println("minOpponentBid = " + minOpponentBid);
+		//System.out.println("Task = " + task);
+		//System.out.println("Task reward " + task.reward);
+		//System.out.println("marginCost = " + marginalCost);
+		//System.out.println("opponentMarginalCost = " + opponentMarginalCost);
+		//System.out.println("minOpponentBid = " + minOpponentBid);
 		double distanceTask = task.pickupCity.distanceTo(task.deliveryCity);
 		double distanceSum = distanceTask
 				+ currentCity.distanceTo(task.pickupCity);
 		double dummycost = distanceSum * vehicle.costPerKm();
-		System.out.println("dummy distance =" + distanceSum);
-		System.out.println("dummycost =" + dummycost);
+		//System.out.println("dummy distance =" + distanceSum);
+		//System.out.println("dummycost =" + dummycost);
 
-		
-		
+
+
 		// rule-based bidding
 		double bid = Math.max(opponentMarginalCost * opponentMargin, margin * marginalCost);
 		if(round > 0 && bid < minOpponentBid) {
 			bid = Math.max(minOpponentBid * margin, 0);
 		}
-		
+
 		if(round < initialDiscountRounds)
 			bid = bid * initialDiscount;
-		
+
 		round++;
 		return (long) Math.floor(bid);
 	}
 
 	@Override
 	public List<Plan> plan(List<Vehicle> vehicles, TaskSet tasks) {
-		System.out.println("I am now doing the final planning");
+		//System.out.println("I am now doing the final planning");
 		// TODO: fix the timeout to be the one of the plan instead of bid
     	SLS sls = new SLS(vehicles, tasks, timeout_plan);
     	return sls.plan();

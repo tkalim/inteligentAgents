@@ -27,19 +27,19 @@ public class SLS {
     long time_start;
 	Random r;
 	public Solution bestSolution;
-	
+
     public SLS(SLS sls, Task additionalTask, long timeout){
     	// the vehicle do not change per agent for SLS (no need for deep copy)
     	this.vehicles = sls.vehicles;
 		this.tasks = new HashSet<Task>();
-		
+
     	// forming a new set of tasks (whenever there is a new task auctioned)
     	if(sls.tasks.size() == 0) {
     		this.tasks.add(additionalTask);
     		this.bestSolution = selectInitialSolutionClosestVehicle(vehicles, tasks);
     	}
     	else {
-    		
+
     		// make deep copy of the previous SLS of the tasks and add the additional task
     		for(Task t : sls.tasks) {
     			this.tasks.add(t);
@@ -50,13 +50,13 @@ public class SLS {
             // to be continued... (fixed)
             this.bestSolution = selectLocalBestSolution(sls.bestSolution, additionalTask);
     	}
-       
-        
+
+
         this.timeout = timeout;
         this.r = new Random();
-        
+
       }
-    
+
     public SLS(List<Vehicle> vehicles, long timeout){
         this.vehicles = vehicles;
         this.tasks = new HashSet<Task>();
@@ -85,7 +85,7 @@ public class SLS {
 
         long time_end = System.currentTimeMillis();
         long duration = time_end - time_start;
-        System.out.println("The plan was generated in " + duration + " milliseconds.");
+        //System.out.println("The plan was generated in " + duration + " milliseconds.");
 
         return plans;
     }
@@ -96,14 +96,14 @@ public class SLS {
     	Solution A;
     	if(this.bestSolution == null)
     		A = selectInitialSolutionClosestVehicle(vehicles, tasks);
-    	else 
+    	else
     		A = this.bestSolution;
-        
-        System.out.println("InitialSolution: \n" + A);
-        
+
+        //System.out.println("InitialSolution: \n" + A);
+
         int max_iter = 1000000;
         int iter = 0;
-        
+
         // put the time and # of iterations
         while(max_iter > iter && !isTimeout()){
           Solution oldA = new Solution(A);
@@ -111,40 +111,40 @@ public class SLS {
           ArrayList<Solution> N = chooseNeighbours(oldA);
 
           A = localChoice(N, oldA);
-          
+
           if(A.getCost() < oldA.getCost()) {
         	  this.bestSolution = A;
           }
-          
+
           iter += 1;
         }
-        
-        System.out.println("Number of iterations: " + iter);
-        System.out.println("Final Solution: \n " + A);
+
+        //System.out.println("Number of iterations: " + iter);
+        //System.out.println("Final Solution: \n " + A);
 
         // store the best solution
         this.bestSolution = A;
-        
+
         return A.getPlans();
     }
-    
+
     private boolean isTimeout() {
     	return System.currentTimeMillis() - time_start >= 0.95*timeout;
     }
-    
+
     private Solution selectLocalBestSolution(Solution A, Task additionalTask) {
     	double minCost = Double.MAX_VALUE;
     	Solution bestSolution = null;
-    	
+
     	// remember that this only produce only the local solution from previous global solution with one less task
     	// to converge again (or at least try) to global one we need to rerun SLS with this as initial Solution to start with
-    	
+
     	// try adding the task to all vehicles and to between every position of nextTask
     	for(int i = 0 ; i < vehicles.size(); i++) {
     		// if the task is too have for the vehicle then just skip
     		if(additionalTask.weight > vehicles.get(i).capacity())
     			continue;
-    		
+
     		for(int j = 0 ; j < A.solution.get(i).nextTask.size(); j++) {
     			// start from index j+1 as we want to position PickUp then Delivery
     			// the or equal in the condition is there at the Delivery can be the last thing
@@ -164,7 +164,7 @@ public class SLS {
     	}
     	return bestSolution;
     }
-    
+
     private Solution selectInitialSolutionLargestVehicle(List<Vehicle> vehicles, TaskSet tasks){
     // construct a solution with the largest vehicle carrying all the tasks in P1,D1,P2,D2...Pn,Dn fashion
       Solution A = new Solution(vehicles);
@@ -179,7 +179,7 @@ public class SLS {
 
       return A;
     }
-    
+
     private Solution selectInitialSolutionRandomVehicle(List<Vehicle> vehicles, TaskSet tasks){
     // construct a solution with the largest vehicle carrying all the tasks in P1,D1,P2,D2...Pn,Dn fashion
       Solution A = new Solution(vehicles);
@@ -201,7 +201,7 @@ public class SLS {
 
       return A;
     }
-    
+
     private Solution selectInitialSolutionClosestVehicle(List<Vehicle> vehicles, Set<Task> tasks){
       Solution A = new Solution(vehicles);
 
@@ -222,8 +222,8 @@ public class SLS {
 
       return A;
     }
-    
-    
+
+
 
 	public static int largestVehicleIndex(List<Vehicle> vehicles){
 		Vehicle maxCapacityVehicle = vehicles.get(0);
@@ -236,7 +236,7 @@ public class SLS {
 		}
 		return index;
 	}
-	
+
 	public int randomVehicleIndex(Solution A) {
 		// choose random vehicle which has at least one task
 		while(true) {
@@ -245,7 +245,7 @@ public class SLS {
 				return randomIdx;
 		}
 	}
-	
+
 	class SolutionComparator implements Comparator<Solution> {
 	    public int compare(Solution a, Solution b) {
 	    	double aCost = a.getCost();
@@ -268,30 +268,30 @@ public class SLS {
 	      return Collections.min(N, new SolutionComparator());
 	    return oldA;
 	}
-	
+
 	public ArrayList<Solution> chooseNeighbours(Solution A){
 		ArrayList<Solution> N = new ArrayList<Solution>();
 		int randomVehicleIdx = randomVehicleIndex(A);
-		
+
 		// Applying the changing vehicle operator
 		for(int i = 0 ; i < A.solution.size(); i++) {
 			if(randomVehicleIdx != i) {
 				Solution newA = VehiclePlan.changingVehicle(A, randomVehicleIdx, i);
 				if(newA != null)
-					N.add(newA);		
+					N.add(newA);
 			}
 		}
-		
+
 		if(A.solution.get(randomVehicleIdx).nextTask.size() >= 2) {
 			for(int i = 0 ; i < A.solution.get(randomVehicleIdx).nextTask.size() - 1; i++) {
 				for(int j = i + 1; j < A.solution.get(randomVehicleIdx).nextTask.size(); j++) {
 					Solution newA = VehiclePlan.changingTaskOrder(A, randomVehicleIdx, i, j);
 					if(newA != null)
-						N.add(newA);	
+						N.add(newA);
 				}
 			}
 		}
-		
+
 		return N;
 	}
 

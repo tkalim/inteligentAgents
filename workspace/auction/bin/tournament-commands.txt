@@ -1,3 +1,0 @@
-java -jar ../logist/logist.jar -new 'test106step2' 'agents'
-java -jar '../logist/logist.jar' -run 'test106step2' 'config/auction.xml'
-java -jar '../logist/logist.jar' -score 'test106step2'
