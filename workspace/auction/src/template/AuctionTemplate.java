@@ -134,11 +134,17 @@ public class AuctionTemplate implements AuctionBehavior {
 			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + 0.01);
 		}
 		System.out.println("------------------------");
-		
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+
 	}
 	
 	@Override
 	public Long askPrice(Task task) {
+		System.out.println("ROUND " + round);
 		int largestVehicleIdx = SLS.largestVehicleIndex(agent.vehicles());
 		if (agent.vehicles().get(largestVehicleIdx).capacity() < task.weight)
 			return null;
@@ -173,6 +179,18 @@ public class AuctionTemplate implements AuctionBehavior {
 			marginalCost = potentialNewSls.bestSolution.getCost();
 			opponentMarginalCost = opponentPotentialNewSls.bestSolution.getCost();
 		}
+		System.out.println("Task = " + task);
+		System.out.println("marginCost = " + marginalCost);
+		System.out.println("opponentMarginalCost = " + opponentMarginalCost);
+		System.out.println("minOpponentBid = " + minOpponentBid);
+		long distanceTask = task.pickupCity.distanceUnitsTo(task.deliveryCity);
+		long distanceSum = distanceTask
+				+ currentCity.distanceUnitsTo(task.pickupCity);
+		double dummycost = Measures.unitsToKM(distanceSum
+				* vehicle.costPerKm());
+		System.out.println("dummy distance =" + distanceSum);
+		System.out.println("dummycost =" + distanceSum);
+
 		
 		
 		// rule-based bidding
