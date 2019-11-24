@@ -27,6 +27,7 @@ public class Solution {
 	
 	public double getCost() {
 		double accumulatedCost = 0.0;
+		if(solution == null) return 0;
 		for(VehiclePlan p: solution) {
 			accumulatedCost += p.getCost();
 		}

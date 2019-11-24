@@ -84,10 +84,10 @@ public class AuctionTemplate implements AuctionBehavior {
         // TODO: double check this new TaskSet is not creating some funky problems
         // agent.getTasks() is expected to be empty
         assert agent.getTasks().size() == 0;
-        sls = new SLS(agent.vehicles(), agent.getTasks(), timeout_bid/2);
+        sls = new SLS(agent.vehicles(), null, timeout_bid/2);
         // opponent will have a different set of vehicles with their homecity and capacity
         // let's assume for now they are the same
-        opponentSls = new SLS(agent.vehicles(), agent.getTasks(), timeout_bid/2);
+        opponentSls = new SLS(agent.vehicles(), null, timeout_bid/2);
         
         // hyperparam
         upperMargin = 0.8;
@@ -149,7 +149,9 @@ public class AuctionTemplate implements AuctionBehavior {
 		
 		// initializing two new SLS planning with the additional task
 		potentialNewSls = new SLS(sls, task, timeout_bid/2);
+		potentialNewSls.plan();
 		opponentPotentialNewSls = new SLS(opponentSls, task, timeout_bid/2);
+		opponentPotentialNewSls.plan();
 		
 		assert(potentialNewSls.bestSolution.getNumberOfTasks() == sls.bestSolution.getNumberOfTasks() + 1);
 		assert(opponentPotentialNewSls.bestSolution.getNumberOfTasks() == opponentSls.bestSolution.getNumberOfTasks() + 1);

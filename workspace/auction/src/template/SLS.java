@@ -5,8 +5,10 @@ import logist.simulation.Vehicle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import logist.agent.Agent;
@@ -20,7 +22,7 @@ import logist.topology.Topology.City;
 
 public class SLS {
     private List<Vehicle> vehicles;
-    private TaskSet tasks;
+    private Set<Task> tasks;
     long timeout;
     long time_start;
 	Random r;
@@ -29,26 +31,39 @@ public class SLS {
     public SLS(SLS sls, Task additionalTask, long timeout){
     	// the vehicle do not change per agent for SLS (no need for deep copy)
     	this.vehicles = sls.vehicles;
+		this.tasks = new HashSet<Task>();
 		
     	// forming a new set of tasks (whenever there is a new task auctioned)
-        this.tasks = TaskSet.copyOf(sls.tasks);
-        this.tasks.add(additionalTask);
+    	if(sls.tasks.size() == 0) {
+    		this.tasks.add(additionalTask);
+    		this.bestSolution = selectInitialSolutionClosestVehicle(vehicles, tasks);
+    	}
+    	else {
+    		
+    		// make deep copy of the previous SLS of the tasks and add the additional task
+    		for(Task t : sls.tasks) {
+    			this.tasks.add(t);
+    		}
+    		tasks.add(additionalTask);
+    		// the new best solution relies on the best solution of the previous SLS (which tS - additionalTask)
+            // and the best new local solution on where to put this tasks (before running a convergence SLS again)
+            // to be continued... (fixed)
+            this.bestSolution = selectLocalBestSolution(sls.bestSolution, additionalTask);
+    	}
+       
         
         this.timeout = timeout;
         this.r = new Random();
-        // the new best solution relies on the best solution of the previous SLS (which tS - additionalTask)
-        // and the best new local solution on where to put this tasks (before running a convergence SLS again)
-        // to be continued... (fixed)
-        this.bestSolution = selectLocalBestSolution(sls.bestSolution, additionalTask);
+        
       }
     
 
     public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
       this.vehicles = vehicles;
-      this.tasks = tasks;
+      this.tasks = new HashSet<Task>();
       this.timeout = timeout;
       this.r = new Random();
-      this.bestSolution = null;
+      this.bestSolution = new Solution(vehicles);
     }
 
     public List<Plan> plan() {
@@ -63,7 +78,7 @@ public class SLS {
         return plans;
     }
 
-    private List<Plan> slsAlgorithm(List<Vehicle> vehicles, TaskSet tasks) {
+    private List<Plan> slsAlgorithm(List<Vehicle> vehicles, Set<Task> tasks) {
         //Solution A = selectInitialSolutionLargestVehicle(vehicles, tasks);
         //Solution A = selectInitialSolutionRandomVehicle(vehicles, tasks);
     	Solution A;
@@ -171,7 +186,7 @@ public class SLS {
       return A;
     }
     
-    private Solution selectInitialSolutionClosestVehicle(List<Vehicle> vehicles, TaskSet tasks){
+    private Solution selectInitialSolutionClosestVehicle(List<Vehicle> vehicles, Set<Task> tasks){
       Solution A = new Solution(vehicles);
 
       // assign a task to the closest vehicle
