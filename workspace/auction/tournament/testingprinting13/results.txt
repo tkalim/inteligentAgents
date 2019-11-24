@@ -1,0 +1,10 @@
+### auction.xml ###
+     Agents       | Win - Draw - Lose |     1stCosmin     |     YourName     
+    1stCosmin     |     1 - 0 - 1     |         -         |  WIN (980 : 866) 
+    YourName      |     1 - 0 - 1     | WIN (2133 : 243)  |         -        
+
+First company results
+  # wins   : 2
+  # draws  : 0
+  # losses : 0
+

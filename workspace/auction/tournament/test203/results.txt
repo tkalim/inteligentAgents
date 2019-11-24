@@ -1,0 +1,10 @@
+### auction.xml ###
+     Agents       | Win - Draw - Lose |     YourName      |     YourName2    
+    YourName      |     2 - 0 - 0     |         -         | WIN (13073 : 367)
+    YourName2     |     0 - 0 - 2     | LOSE (15 : 14450) |         -        
+
+First company results
+  # wins   : 1
+  # draws  : 0
+  # losses : 1
+

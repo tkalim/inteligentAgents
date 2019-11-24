@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<agents>
+	<!-- An auto-generated list of agents and their behavior classes -->
+	<!--  - jar directory : agents/ -->
+	<!--  - generated on  : Sun Nov 24 21:19:38 CET 2019 -->
+	<agent name="YourName">
+		<set class-path="bin"/>
+		<set class-name="template.AuctionTemplate"/>
+	</agent>
+	<agent name="1stCosmin">
+		<set class-path="agents/1stCosmin.jar"/>
+		<set class-name="main.AuctionAgent"/>
+	</agent>
+</agents>
