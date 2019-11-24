@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<history configuration="config/auction.xml">
+	<agents>
+		<agent name="1stCosmin">
+			<vehicle name="Vehicle 1"/>
+			<vehicle name="Vehicle 2"/>
+		</agent>
+		<agent name="YourName">
+			<vehicle name="Vehicle 3"/>
+			<vehicle name="Vehicle 4"/>
+		</agent>
+	</agents>
+	<rounds>
+		<round id="1">
+			<tasks>
+				<task id="0" pickup="Cardiff" delivery="Sheffield" weight="3" reward="69479">
+					<bid agent="1stCosmin" bid="2629"/>
+					<bid agent="YourName" bid="1450"/>
+				</task>
+				<task id="1" pickup="Manchester" delivery="Norwich" weight="3" reward="47516">
+					<bid agent="1stCosmin" bid="3042"/>
+					<bid agent="YourName" bid="1649"/>
+				</task>
+				<task id="2" pickup="Cardiff" delivery="Manchester" weight="3" reward="68638">
+					<bid agent="1stCosmin" bid="2391"/>
+					<bid agent="YourName" bid="1157"/>
+				</task>
+				<task id="3" pickup="Sheffield" delivery="Portsmouth" weight="3" reward="55553">
+					<bid agent="1stCosmin" bid="2156"/>
+					<bid agent="YourName" bid="2484"/>
+				</task>
+				<task id="4" pickup="Liverpool" delivery="Norwich" weight="3" reward="41305">
+					<bid agent="1stCosmin" bid="2509"/>
+					<bid agent="YourName" bid="1422"/>
+				</task>
+				<task id="5" pickup="Norwich" delivery="London" weight="3" reward="85625">
+					<bid agent="1stCosmin" bid="1673"/>
+					<bid agent="YourName" bid="0"/>
+				</task>
+				<task id="6" pickup="Cardiff" delivery="London" weight="3" reward="64503">
+					<bid agent="1stCosmin" bid="1954"/>
+					<bid agent="YourName" bid="930"/>
+				</task>
+				<task id="7" pickup="London" delivery="Manchester" weight="3" reward="68101">
+					<bid agent="1stCosmin" bid="1409"/>
+					<bid agent="YourName" bid="611"/>
+				</task>
+				<task id="8" pickup="Plymouth" delivery="Birmingham" weight="3" reward="41269">
+					<bid agent="1stCosmin" bid="2862"/>
+					<bid agent="YourName" bid="2130"/>
+				</task>
+				<task id="9" pickup="Portsmouth" delivery="Plymouth" weight="3" reward="75780">
+					<bid agent="1stCosmin" bid="1051"/>
+					<bid agent="YourName" bid="679"/>
+				</task>
+			</tasks>
+			<events>
+				<event id="0" time="0" vehicle="Vehicle 1" move="Leeds"/>
+				<event id="1" time="0" vehicle="Vehicle 4" move="London"/>
+				<event id="2" time="1094444444" vehicle="Vehicle 1" move="Sheffield"/>
+				<event id="3" time="1277777777" vehicle="Vehicle 4" pickup="7"/>
+				<event id="4" time="1553333332" vehicle="Vehicle 1" pickup="3"/>
+				<event id="5" time="1577777777" vehicle="Vehicle 4" move="Birmingham"/>
+				<event id="6" time="1853333332" vehicle="Vehicle 1" move="Birmingham"/>
+				<event id="7" time="2855555553" vehicle="Vehicle 1" move="London"/>
+				<event id="8" time="2888888887" vehicle="Vehicle 4" move="Cardiff"/>
+				<event id="9" time="4166666663" vehicle="Vehicle 1" move="Portsmouth"/>
+				<event id="10" time="4166666664" vehicle="Vehicle 4" pickup="2"/>
+				<event id="11" time="4466666664" vehicle="Vehicle 4" pickup="6"/>
+				<event id="12" time="4766666664" vehicle="Vehicle 4" pickup="0"/>
+				<event id="13" time="4997777774" vehicle="Vehicle 1" deliver="3"/>
+				<event id="14" time="5066666663" vehicle="Vehicle 4" move="Birmingham"/>
+				<event id="15" time="6344444440" vehicle="Vehicle 4" move="Manchester"/>
+				<event id="16" time="7398888883" vehicle="Vehicle 4" deliver="7"/>
+				<event id="17" time="7698888883" vehicle="Vehicle 4" pickup="1"/>
+				<event id="18" time="7998888883" vehicle="Vehicle 4" deliver="2"/>
+				<event id="19" time="8298888882" vehicle="Vehicle 4" move="Liverpool"/>
+				<event id="20" time="8684444437" vehicle="Vehicle 4" pickup="4"/>
+				<event id="21" time="8984444437" vehicle="Vehicle 4" move="Leeds"/>
+				<event id="22" time="9789999992" vehicle="Vehicle 4" move="Sheffield"/>
+				<event id="23" time="10248888880" vehicle="Vehicle 4" deliver="0"/>
+				<event id="24" time="10548888880" vehicle="Vehicle 4" move="Birmingham"/>
+				<event id="25" time="11551111102" vehicle="Vehicle 4" move="London"/>
+				<event id="26" time="12862222212" vehicle="Vehicle 4" deliver="6"/>
+				<event id="27" time="13162222211" vehicle="Vehicle 4" move="Norwich"/>
+				<event id="28" time="14439999988" vehicle="Vehicle 4" pickup="5"/>
+				<event id="29" time="14739999988" vehicle="Vehicle 4" deliver="1"/>
+				<event id="30" time="15039999988" vehicle="Vehicle 4" deliver="4"/>
+				<event id="31" time="15339999988" vehicle="Vehicle 4" move="London"/>
+				<event id="32" time="16617777765" vehicle="Vehicle 4" deliver="5"/>
+				<event id="33" time="16917777765" vehicle="Vehicle 4" move="Portsmouth"/>
+				<event id="34" time="17748888875" vehicle="Vehicle 4" pickup="9"/>
+				<event id="35" time="18048888874" vehicle="Vehicle 4" move="Plymouth"/>
+				<event id="36" time="19937777762" vehicle="Vehicle 4" deliver="9"/>
+				<event id="37" time="20237777761" vehicle="Vehicle 4" pickup="8"/>
+				<event id="38" time="20537777761" vehicle="Vehicle 4" move="Portsmouth"/>
+				<event id="39" time="22426666649" vehicle="Vehicle 4" move="London"/>
+				<event id="40" time="23257777759" vehicle="Vehicle 4" move="Birmingham"/>
+				<event id="41" time="24568888869" vehicle="Vehicle 4" deliver="8"/>
+			</events>
+		</round>
+	</rounds>
+	<statistics>
+		<stat rank="1" agent="YourName">
+			<total-tasks value="9"/>
+			<total-distance value="1752.2"/>
+			<total-cost value="8761"/>
+			<total-reward value="10028"/>
+			<total-profit value="1267"/>
+		</stat>
+		<stat rank="2" agent="1stCosmin">
+			<total-tasks value="1"/>
+			<total-distance value="422.8"/>
+			<total-cost value="2114"/>
+			<total-reward value="2156"/>
+			<total-profit value="42"/>
+		</stat>
+	</statistics>
+</history>

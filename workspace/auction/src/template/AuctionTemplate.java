@@ -108,6 +108,7 @@ public class AuctionTemplate implements AuctionBehavior {
 		double opponentBid = bids[(agent.id() + 1) % 2];
 		minOpponentBid = Math.min(minOpponentBid, opponentBid);
 		
+		
 		if (winner == agent.id()) {
 			System.out.println("I won the previous bid");
 			System.out.println("my bid " + bid);
@@ -162,9 +163,15 @@ public class AuctionTemplate implements AuctionBehavior {
 		
 		// initializing two new SLS planning with the additional task
 		potentialNewSls = new SLS(sls, task, timeout_bid/2);
-		potentialNewSls.plan();
 		opponentPotentialNewSls = new SLS(opponentSls, task, timeout_bid/2);
-		opponentPotentialNewSls.plan();
+		if(sls.bestSolution.getNumberOfTasks() > 0) {
+			potentialNewSls.plan();
+
+		}
+		if(opponentSls.bestSolution.getNumberOfTasks() > 0) {
+			opponentPotentialNewSls.plan();
+		}
+
 		
 		assert(potentialNewSls.bestSolution.getNumberOfTasks() == sls.bestSolution.getNumberOfTasks() + 1);
 		assert(opponentPotentialNewSls.bestSolution.getNumberOfTasks() == opponentSls.bestSolution.getNumberOfTasks() + 1);
@@ -172,8 +179,8 @@ public class AuctionTemplate implements AuctionBehavior {
 		double marginalCost;
 		double opponentMarginalCost;
 		if(round != 0) {
-			marginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
-			opponentMarginalCost = opponentPotentialNewSls.bestSolution.getCost() - opponentSls.bestSolution.getCost();
+			marginalCost = Math.max(0, potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost());
+			opponentMarginalCost = Math.max(0, opponentPotentialNewSls.bestSolution.getCost() - opponentSls.bestSolution.getCost());
 		}
 		else {
 			marginalCost = potentialNewSls.bestSolution.getCost();
@@ -195,9 +202,12 @@ public class AuctionTemplate implements AuctionBehavior {
 		
 		// rule-based bidding
 		double bid;
-		if(marginalCost * margin < dummycost) {
-			bid = opponentMarginalCost * opponentMargin - 1;
+		if(marginalCost == 0) {
+			bid = Math.max(0, minOpponentBid*0.3);			
 		}
+//		else if(marginalCost * margin < dummycost) {
+//			bid = Math.max(0, opponentMarginalCost * opponentMargin - 1);
+//		}
 		else {
 			bid = marginalCost * margin;
 		}		

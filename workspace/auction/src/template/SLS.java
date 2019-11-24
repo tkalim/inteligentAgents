@@ -112,6 +112,10 @@ public class SLS {
 
           A = localChoice(N, oldA);
           
+          if(A.getCost() < oldA.getCost()) {
+        	  this.bestSolution = A;
+          }
+          
           iter += 1;
         }
         
