@@ -52,13 +52,14 @@ public class Solution {
 	
 	public String toString() {
 		StringBuilder str = new StringBuilder();
-		str.append("Total Cost: " + Double.toString(this.getCost()) + "\n");
+		str.append("Total Cost: " + Double.toString(this.getCost()) + "total number of tasks " + this.getNumberOfTasks()+ "\n");
         str.append("Plans\n");
         for(VehiclePlan vp: this.solution) {
         	Plan plan = vp.getPlan();
-        	str.append("Vehicle " + vp.vehicle.id() + " " + ", # of tasks: " + this.solution.size()/2 + ", distance " + 
+        	str.append("Vehicle " + vp.vehicle.id() + " " + ", # of tasks: " + vp.nextTask.size()/2 + ", distance " + 
         				plan.totalDistance() + ", costPerkm " + vp.vehicle.costPerKm() + ", Capacity" + vp.vehicle.capacity() + "\n");
         	str.append(plan + "\n");
+        	str.append("---\n");
         }
         return str.toString();
 	}

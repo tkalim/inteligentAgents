@@ -57,13 +57,25 @@ public class SLS {
         
       }
     
+    public SLS(List<Vehicle> vehicles, long timeout){
+        this.vehicles = vehicles;
+        this.tasks = new HashSet<Task>();
+        this.timeout = timeout;
+        this.r = new Random();
+        this.bestSolution = new Solution(vehicles);
+      }
 
     public SLS(List<Vehicle> vehicles, TaskSet tasks, long timeout){
       this.vehicles = vehicles;
       this.tasks = new HashSet<Task>();
+      if(tasks != null) {
+    	  for(Task t: tasks) {
+        	  this.tasks.add(t);
+          }
+      }
       this.timeout = timeout;
       this.r = new Random();
-      this.bestSolution = new Solution(vehicles);
+      this.bestSolution = null;
     }
 
     public List<Plan> plan() {

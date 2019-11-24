@@ -84,10 +84,10 @@ public class AuctionTemplate implements AuctionBehavior {
         // TODO: double check this new TaskSet is not creating some funky problems
         // agent.getTasks() is expected to be empty
         assert agent.getTasks().size() == 0;
-        sls = new SLS(agent.vehicles(), null, timeout_bid/2);
+        sls = new SLS(agent.vehicles(), timeout_bid/2);
         // opponent will have a different set of vehicles with their homecity and capacity
         // let's assume for now they are the same
-        opponentSls = new SLS(agent.vehicles(), null, timeout_bid/2);
+        opponentSls = new SLS(agent.vehicles(), timeout_bid/2);
         
         // hyperparam
         upperMargin = 0.8;
@@ -109,7 +109,10 @@ public class AuctionTemplate implements AuctionBehavior {
 		minOpponentBid = Math.min(minOpponentBid, opponentBid);
 		
 		if (winner == agent.id()) {
-			//System.out.println("winner of the bid is " + agent.id());
+			System.out.println("I won the previous bid");
+			System.out.println("my bid " + bid);
+			System.out.println("opponent bid " + opponentBid);
+			
 			//currentCity = previous.deliveryCity;
 			// potentialNewSls is with the new task included
 			sls = potentialNewSls;
@@ -119,6 +122,9 @@ public class AuctionTemplate implements AuctionBehavior {
 			opponentMargin = Math.max(opponentLowerMargin, opponentMargin - 0.01);
 		}
 		else {
+			System.out.println("OPPONENT won the previous bid");
+			System.out.println("my bid " + bid);
+			System.out.println("opponent bid " + opponentBid);
 			// potentialNewSls is with the new task included
 			opponentSls = opponentPotentialNewSls;
 			// decreansing our margin to become more competitive while not going below the lowerbound
@@ -127,6 +133,7 @@ public class AuctionTemplate implements AuctionBehavior {
 			// while not exceeding its uppermargin
 			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + 0.01);
 		}
+		System.out.println("------------------------");
 		
 	}
 	
@@ -156,8 +163,17 @@ public class AuctionTemplate implements AuctionBehavior {
 		assert(potentialNewSls.bestSolution.getNumberOfTasks() == sls.bestSolution.getNumberOfTasks() + 1);
 		assert(opponentPotentialNewSls.bestSolution.getNumberOfTasks() == opponentSls.bestSolution.getNumberOfTasks() + 1);
 		
-		double marginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
-		double opponentMarginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
+		double marginalCost;
+		double opponentMarginalCost;
+		if(round != 0) {
+			marginalCost = potentialNewSls.bestSolution.getCost() - sls.bestSolution.getCost();
+			opponentMarginalCost = opponentPotentialNewSls.bestSolution.getCost() - opponentSls.bestSolution.getCost();
+		}
+		else {
+			marginalCost = potentialNewSls.bestSolution.getCost();
+			opponentMarginalCost = opponentPotentialNewSls.bestSolution.getCost();
+		}
+		
 		
 		// rule-based bidding
 		double bid = Math.min(marginalCost * margin, opponentMarginalCost * opponentMargin);
@@ -178,6 +194,7 @@ public class AuctionTemplate implements AuctionBehavior {
 
 	@Override
 	public List<Plan> plan(List<Vehicle> vehicles, TaskSet tasks) {
+		System.out.println("I am now doing the final planning");
 		// TODO: fix the timeout to be the one of the plan instead of bid
     	SLS sls = new SLS(vehicles, tasks, timeout_plan);
     	return sls.plan();
