@@ -90,8 +90,8 @@ public class AuctionTemplate implements AuctionBehavior {
         opponentSls = new SLS(agent.vehicles(), timeout_bid/2);
         
         // hyperparam
-        upperMargin = 0.8;
-        lowerMargin = 0.7;
+        upperMargin = 0.85;
+        lowerMargin = 0.75;
         margin = (upperMargin + lowerMargin) / 2;
         
         opponentUpperMargin = 0.9;
@@ -201,29 +201,13 @@ public class AuctionTemplate implements AuctionBehavior {
 		
 		
 		// rule-based bidding
-		double bid;
-		if(marginalCost == 0) {
-			bid = Math.max(0, minOpponentBid*0.3);			
+		double bid = Math.max(opponentMarginalCost * opponentMargin, margin * marginalCost);
+		if(round > 0 && bid < minOpponentBid) {
+			bid = Math.max(minOpponentBid * margin, 0);
 		}
-//		else if(marginalCost * margin < dummycost) {
-//			bid = Math.max(0, opponentMarginalCost * opponentMargin - 1);
-//		}
-		else {
-			bid = marginalCost * margin;
-		}		
-//		if(round > 0 && bid < minOpponentBid) {
-//			bid = Math.max(0, minOpponentBid - 1);
-//		}
-//		
-//		if(task.reward >= dummycost) {
-//			bid = 0;
-//		}
 		
-		// initial aggresive discounting for the first tasks
-		// initialDiscountRounds might be different depending on the # of takss offered (look at the TD)
-		if(round < initialDiscountRounds) {
+		if(round < initialDiscountRounds)
 			bid = bid * initialDiscount;
-		}
 		
 		round++;
 		return (long) Math.floor(bid);
