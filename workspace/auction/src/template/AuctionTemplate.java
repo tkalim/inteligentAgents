@@ -90,8 +90,8 @@ public class AuctionTemplate implements AuctionBehavior {
         opponentSls = new SLS(agent.vehicles(), timeout_bid/2);
         
         // hyperparam
-        upperMargin = 0.85;
-        lowerMargin = 0.75;
+        upperMargin = 0.75;
+        lowerMargin = 0.85;
         margin = (upperMargin + lowerMargin) / 2;
         
         opponentUpperMargin = 0.9;
@@ -108,7 +108,7 @@ public class AuctionTemplate implements AuctionBehavior {
 		double opponentBid = bids[(agent.id() + 1) % 2];
 		minOpponentBid = Math.min(minOpponentBid, opponentBid);
 		
-		
+		double step = 0.04;
 		if (winner == agent.id()) {
 			System.out.println("I won the previous bid");
 			System.out.println("my bid " + bid);
@@ -118,9 +118,9 @@ public class AuctionTemplate implements AuctionBehavior {
 			// potentialNewSls is with the new task included
 			sls = potentialNewSls;
 			// adding more to our margin while not exceeding the max
-			margin = Math.min(upperMargin, margin + 0.01);
+			margin = Math.min(upperMargin, margin + step);
 			// we assume that the opponent is lowering its margin to match us in the next bid
-			opponentMargin = Math.max(opponentLowerMargin, opponentMargin - 0.01);
+			opponentMargin = Math.max(opponentLowerMargin, opponentMargin - step);
 		}
 		else {
 			System.out.println("OPPONENT won the previous bid");
@@ -129,10 +129,10 @@ public class AuctionTemplate implements AuctionBehavior {
 			// potentialNewSls is with the new task included
 			opponentSls = opponentPotentialNewSls;
 			// decreansing our margin to become more competitive while not going below the lowerbound
-			margin = Math.max(lowerMargin, margin - 0.01);
+			margin = Math.max(lowerMargin, margin - step);
 			// we assume that the opponent trying to higher its margin to gain more money in the next bid
 			// while not exceeding its uppermargin
-			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + 0.01);
+			opponentMargin = Math.min(opponentUpperMargin, opponentMargin + step);
 		}
 		System.out.println("------------------------");
 		System.out.println("");
