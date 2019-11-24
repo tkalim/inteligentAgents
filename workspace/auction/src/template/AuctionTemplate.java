@@ -180,6 +180,7 @@ public class AuctionTemplate implements AuctionBehavior {
 			opponentMarginalCost = opponentPotentialNewSls.bestSolution.getCost();
 		}
 		System.out.println("Task = " + task);
+		System.out.println("Task reward " + task.reward);
 		System.out.println("marginCost = " + marginalCost);
 		System.out.println("opponentMarginalCost = " + opponentMarginalCost);
 		System.out.println("minOpponentBid = " + minOpponentBid);
@@ -197,6 +198,10 @@ public class AuctionTemplate implements AuctionBehavior {
 		
 		if(round > 0 && bid < minOpponentBid) {
 			bid = Math.max(0, minOpponentBid - 1);
+		}
+		
+		if(task.reward >= dummycost) {
+			bid = 0;
 		}
 		
 		// initial aggresive discounting for the first tasks
