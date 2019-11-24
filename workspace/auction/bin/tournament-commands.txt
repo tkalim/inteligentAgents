@@ -1,3 +1,3 @@
-java -jar ../logist/logist.jar -new 'testing' 'agents'
-java -jar '../logist/logist.jar' -run 'testing' 'config/auction.xml'
-java -jar '../logist/logist.jar' -score 'testing'
+java -jar ../logist/logist.jar -new 'testingprinting6' 'agents'
+java -jar '../logist/logist.jar' -run 'testingprinting6' 'config/auction.xml'
+java -jar '../logist/logist.jar' -score 'testingprinting6'

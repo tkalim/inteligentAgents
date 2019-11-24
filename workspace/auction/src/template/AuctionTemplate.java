@@ -44,7 +44,7 @@ public class AuctionTemplate implements AuctionBehavior {
     private double opponentUpperMargin;
     private double opponentLowerMargin;
     private int round = 0;
-    private int initialDiscountRounds = 5;
+    private int initialDiscountRounds = 3;
     private double initialDiscount = 0.5;
     
     private SLS sls;
