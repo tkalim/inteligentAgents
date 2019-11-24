@@ -194,15 +194,20 @@ public class AuctionTemplate implements AuctionBehavior {
 		
 		
 		// rule-based bidding
-		double bid = Math.min(marginalCost * margin, opponentMarginalCost * opponentMargin);
-		
-		if(round > 0 && bid < minOpponentBid) {
-			bid = Math.max(0, minOpponentBid - 1);
+		double bid;
+		if(marginalCost * margin < dummycost) {
+			bid = opponentMarginalCost * opponentMargin - 1;
 		}
-		
-		if(task.reward >= dummycost) {
-			bid = 0;
-		}
+		else {
+			bid = marginalCost * margin;
+		}		
+//		if(round > 0 && bid < minOpponentBid) {
+//			bid = Math.max(0, minOpponentBid - 1);
+//		}
+//		
+//		if(task.reward >= dummycost) {
+//			bid = 0;
+//		}
 		
 		// initial aggresive discounting for the first tasks
 		// initialDiscountRounds might be different depending on the # of takss offered (look at the TD)
